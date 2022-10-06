@@ -1,0 +1,1317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+
+<!-- Seems to render in Mozilla Firefox the best.  Broken in IE7 -->
+<?xml-stylesheet type="text/xsl" href="./ant2html.xsl"?>
+
+<project name="Xj3D - NPS SourceForge" default="run" basedir=".">
+    <description>Builds, tests, and runs the project NPS Xj3D 2.1</description>
+
+    <property file="nbproject/private/private.properties"/>
+    <property file="build.properties"/>
+
+    <!-- $Id: build_nps.xml 11885 2014-05-22 19:21:37Z TDNorb $ -->
+    <import file="nbproject/ide-file-targets.xml"/>
+
+    <!-- access to local environment variables -->
+    <property environment="env"/>
+
+    <!-- Warning: only add izpack installer task after all global properties are defined -->
+    <import file="buildInstallers.xml"/>
+
+    <!--
+    ===============================
+    PROPERTIES/TASKS/MACROS SECTION
+    ===============================
+    -->
+
+    <available file="${xj3d.version.file}" property="version.file.present"/>
+    <available file="${browser.class}" property="browser.class.present"/>
+    <available file="${cadfilter.class}" property="cadfilter.class.present"/>
+    <available file="${replica.class}" property="replica.class.present"/>
+
+    <path id="app.classpath">
+
+        <path path="${run.classpath}"/>
+
+        <!-- Runtime dependencies used for debugging Xj3D -->
+        <!--pathelement id="open.dis.classes" path="../OpenDIS/open-dis/build"/-->
+        <!--pathelement id="aviatrix3d" path="../aviatrix3d/classes"/-->
+
+        <!-- Test/Example paths -->
+        <pathelement path="${examples.dir}/SAI_DOM_Demo"/>
+        <pathelement path="${examples.browser.dir}"/>
+        <pathelement path="${examples.dir}/loader"/>
+        <pathelement path="${examples.spec.x3d.java.dir}"/>
+        <pathelement path="${examples.dir}/sai"/>
+        <pathelement path="${examples.dir}/sav"/>
+        <pathelement path="${eai.src.dir}"/>
+        <pathelement path="${sai.simserver.dir}"/>
+        <pathelement path="${sai.test.dir}"/>
+        <pathelement path="${parsetest.dir}/dis"/>
+        <pathelement path="${parsetest.sai.internal.dir}"/>
+        <pathelement path="${parsetest.sai.internal.dir}/level2"/>
+        <pathelement path="${parsetest.dir}/sensors"/>
+        <pathelement path="${parsetest.dir}/scripts"/>
+        <pathelement path="${xj3d_extensions.combined.dir}"/>
+        <pathelement path="${parsetest.dir}/xj3d_extensions/sai"/>
+        <pathelement path="${conformance.nist.dir}/Miscellaneous/Script"/>
+
+        <!--pathelement path="../TerrainGridExamples/lib/protos"/>
+        <pathelement path="../TerrainGridExamples/lib"/-->
+    </path>
+
+    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+
+    <!--
+    ============
+    INIT SECTION
+    ============
+    -->
+
+    <target name="platformInitialize" depends="platformType,initializeWindows,initializeUnix,initializeMac"/>
+    <target name="platformType">
+        <condition property="isWindows" >
+            <os family="windows"/>
+        </condition>
+        <condition property="isMac" >
+            <os family="mac"/>
+        </condition>
+
+        <!-- Based on Apache Ant user-manual example -->
+        <condition property="isUnixNotMac">
+            <and>
+                <os family="unix"/>
+
+                <not>
+                    <equals arg1="${os.name}" arg2="Mac OS X"/>
+                </not>
+            </and>
+        </condition>
+    </target>
+
+    <target name="initializeWindows" if="isWindows" depends="initializeAll">
+        <property name="os"       value="win"/>
+        <property name="run.args"  value="${win_runarguments}"/>
+        <!-- diagnostics -->
+        <echo message="os=${os}, win_runarguments=${win_runarguments}"/>
+        <echo message="browser.dir=${browser.dir}"/>
+    </target>
+    <target name="initializeUnix" if="isUnixNotMac" depends="initializeAll">
+        <property name="os"       value="unix"/>
+        <property name="run.args" value="${unix_runarguments}"/>
+        <!--echo message="os=${os}, unix_runarguments=${unix_runarguments}"/-->
+    </target>
+    <target name="initializeMac" if="isMac" depends="initializeAll">
+        <property name="os"       value="mac"/>
+        <property name="run.args" value="${mac_runarguments}"/>
+        <!--echo message="os=${os}, mac_runarguments=${mac_runarguments}"/-->
+    </target>
+    <target name="initializeAll" >
+        <property name="win_runarguments"  value="${common.args} ${runarg4} ${runarg5}"/> <!--  -verbose  -->
+        <property name="unix_runarguments" value="${common.args} ${runarg6} ${runarg7}"/>
+        <property name="mac_runarguments"  value="${common.args} ${runarg8} ${runarg9} ${runarg10} ${runarg11} ${runarg12} ${runarg14}"/>
+    </target>
+
+    <target name="init" depends="platformInitialize">
+        <tstamp>
+            <format property="TODAY" pattern="d MMMM yyyy"/>
+        </tstamp>
+
+        <mkdir dir="${build.classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${browser.classes.dir}"/>
+        <mkdir dir="${browser.jars.dir}"/>
+        <mkdir dir="${cadfilter.classes.dir}"/>
+        <mkdir dir="${cadfilter.jars.dir}"/>
+        <mkdir dir="${replica.classes.dir}"/>
+        <mkdir dir="${replica.jars.dir}"/>
+
+    </target>
+
+    <target name="splash" depends="init">
+        <echo message=""/>
+        <echo message="${nps}"/>
+        <echo message="-------------------------------------------------------------------------------------------------"/>
+        <echo message="${moves.institute}"/>
+        <echo message="-------------------------------------------------------------------------------------------------"/>
+        <echo message="${savage.research.group}"/>
+        <echo message="-------------------------------------------------------------------------------------------------"/>
+        <echo message="${product.Name} v${product.Version} [${years}]"/>
+        <echo message="-------------------------------------------------------------------------------------------------"/>
+        <echo message="${ant.version} installed at ${ant.home}"/>
+        <echo message="Java&#x2122; Virtual Machine version ${java.version} installed at ${java.home}"/>
+        <echo message="Operating System: ${os.name} version ${os.version} running on ${os.arch} "/>
+        <echo message="Today is: ${TODAY}"/>
+        <echo message="Local Time: ${TSTAMP}"/>
+        <echo message="-------------------------------------------------------------------------------------------------"/>
+        <echo message=""/>
+    </target>
+
+    <!--
+    ==============
+    PARSER SECTION
+    ==============
+    -->
+
+    <target name="generate.parsers"
+            depends="init">
+        <javacc target="${src.dir}/javacc/vrml/VRML97FieldParser.jj"
+                outputdirectory="${src.java.dir}/org/web3d/parser/vrml97"
+                javacchome="${javacc.home}"/>
+
+        <javacc target="${src.dir}/javacc/vrml/VRML97RelaxedParser.jj"
+                outputdirectory="${src.java.dir}/org/web3d/parser/vrml97"
+                javacchome="${javacc.home}"/>
+
+        <javacc target="${src.dir}/javacc/x3d/X3DFieldParser.jj"
+                outputdirectory="${src.java.dir}/org/web3d/parser/x3d"
+                javacchome="${javacc.home}"/>
+
+        <javacc target="${src.dir}/javacc/x3d/X3DRelaxedParser.jj"
+                outputdirectory="${src.java.dir}/org/web3d/parser/x3d"
+                javacchome="${javacc.home}"/>
+    </target>
+
+    <!--
+    ===============
+    COMPILE SECTION
+    ===============
+    -->
+
+    <!-- Does not follow the intricate make system established for Xj3D, but does
+         conform to the build order delineated in src/java/Makefile-opengl -->
+    <target name="compile.ogl"
+            depends="init">
+
+        <!-- TODO: Experiment with cross compilation techniques described in:
+             http://java.sun.com/javase/6/docs/technotes/tools/solaris/javac.html -->
+        <javac srcdir="${src.java.dir}"
+               destdir="${build.classes.dir}"
+               debug="on"
+               source="${javac.source}"
+               target="${javac.target}"
+               fork="true"
+               memorymaximumsize="1g"
+               includeAntRuntime="no"
+               includes="${xj3d.build.order}"
+               excludes="${xj3d.build.excludes}"
+               classpathref="app.classpath"
+               encoding="${javac.encoding}"
+               verbose="${javac.verbose}">
+
+            <!-- Specifying encoding so that the fastinfoset character 'à' will
+                 compile correctly in
+                 org.web3d.parser.GeneralisedReader.java line: 197 -->
+
+            <compilerarg line="${javac.compilerargs}"/>
+
+        </javac>
+    </target>
+
+    <target name="compile" depends="generate.parsers,compile.ogl">
+        <!-- These are required to be in the ${dist.jar} -->
+        <copy todir="${build.classes.dir}/images">
+            <fileset dir="${src.dir}/images">
+                <exclude name="**/Makefile"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${build.classes.dir}/xml">
+            <fileset dir="${src.dir}/xml">
+                <exclude name="**/Makefile"/>
+                <exclude name="**/*Specification.dtd"/>
+            </fileset>
+        </copy>
+
+        <!-- The properties files in /common seem to be more up to date than the
+             ones in /apps/browser/src/java -->
+        <copy todir="${build.classes.dir}/config">
+            <fileset dir="${src.dir}/config">
+                <exclude name="**/Makefile"/>
+            </fileset>
+        </copy>
+        <copy file="build.properties" tofile="${build.classes.dir}/config/xj3d.properties"/>
+    </target>
+
+    <!-- Does not follow the intricate make system established for Xj3D, but does
+         conform to the build order delineated in apps/browser/src/java/Makefile -->
+    <target name="compile.browser"
+            depends="init">
+
+        <javac srcdir="${browser.src.java.dir}"
+               destdir="${browser.classes.dir}"
+               debug="on"
+               source="${javac.source}"
+               target="${javac.target}"
+               fork="true"
+               memorymaximumsize="1g"
+               includeAntRuntime="no"
+               includes="${browser.build.order}"
+               excludes="${browser.build.excludes}"
+               classpathref="app.classpath">
+
+            <!-- Compile with debug information in the bytecode -->
+            <compilerarg line="${javac.compilerargs}"/>
+
+        </javac>
+    </target>
+
+    <!-- Does not follow the intricate make system established for Xj3D, but does
+         conform to the build order delineated in apps/cadfilter/src/java/Makefile -->
+    <target name="compile.cadfilter"
+            depends="init">
+
+        <javac srcdir="${cadfilter.src.java.dir}"
+               destdir="${cadfilter.classes.dir}"
+               debug="on"
+               source="${javac.source}"
+               target="${javac.target}"
+               fork="true"
+               memorymaximumsize="1g"
+               includeAntRuntime="no"
+               includes="${cadfilter.build.order}"
+               excludes="${cadfilter.build.excludes}"
+               classpathref="app.classpath">
+
+            <!-- Compile with debug information in the bytecode -->
+            <compilerarg line="${javac.compilerargs}"/>
+
+        </javac>
+    </target>
+
+    <target name="compile.replica"
+            depends="init">
+
+        <javac srcdir="${replica.dir}/src/java"
+               destdir="${replica.classes.dir}"
+               debug="on"
+               source="${javac.source}"
+               target="${javac.target}"
+               fork="true"
+               memorymaximumsize="1g"
+               includeAntRuntime="no"
+               classpathref="app.classpath">
+
+            <!-- Compile with debug information in the bytecode -->
+            <compilerarg line="${javac.compilerargs}"/>
+
+        </javac>
+    </target>
+
+    <target name="compile.apps" depends="compile.browser,compile.cadfilter,compile.replica"/>
+
+    <target name="compile.tests" depends="init" description="compile junit tests of interest listed in build.xml">
+
+        <mkdir dir="${build.test.classes.dir}"/>
+        <javac srcdir="${test.src.dir}"
+               destdir="${build.test.classes.dir}"
+               debug="on"
+               source="${javac.source}"
+               target="${javac.target}"
+               fork="true"
+               memorymaximumsize="1g"
+               includeAntRuntime="no"
+               includes="${test.build.order}"
+               classpath="${javac.test.classpath}">
+
+            <!-- Compile with debug information in the bytecode -->
+            <compilerarg line="${javac.compilerargs}"/>
+
+        </javac>
+    </target>
+
+    <!--
+    ============
+    JARS SECTION
+    ============
+    -->
+
+    <target name="jar"
+            depends="compile"
+            description="Build the Xj3D application jar file">
+
+        <copy file="apps/replica/src/java/xj3d/replica/images/Xj3dRenderCaptureFailed.png"
+             todir="${build.classes.dir}/org/xj3d/ui/awt/browser/ogl/images" verbose="true" overwrite="true"/>
+        <jar destfile="${dist.jar}" basedir="${build.classes.dir}">
+            <manifest>
+                <attribute name="Built-By"
+                           value="${my.name} &lt;${my.email}&gt; of the ${savage.research.group} of the ${moves.institute} at the ${nps} "/>
+                <attribute name="Specification-Version"
+                           value="${product.Version}"/>
+                <attribute name="Specification-Vendor"
+                           value="${spec.vendor}"/>
+                <attribute name="Implementation-Title"
+                           value="${product.Name}"/>
+                <attribute name="Implementation-Version"
+                           value="${product.Version} built on ${TODAY} at ${TSTAMP} hrs"/>
+                <attribute name="Implementation-Vendor"
+                           value="${impl.vendor}"/>
+                <attribute name="Implementation-Vendor-Id"
+                           value="${impl.vendor-id}"/>
+            </manifest>
+            <metainf file="${docs.dir}/LICENSE"/>
+            <metainf file="${docs.dir}/LGPL.txt"/>
+        </jar>
+    </target>
+
+    <target name="jar.apps"
+            depends="build,compile.apps"
+            description="Build the Xj3D browser and cadfilter application jar files">
+
+        <jar destfile="${browser.jar}"
+             basedir="${browser.classes.dir}">
+            <manifest>
+                <attribute name="Built-By"
+                           value="${my.name} &lt;${my.email}&gt; of the ${nps}, ${moves.institute}, ${savage.research.group}"/>
+                <attribute name="Specification-Version"
+                           value="${product.Version}"/>
+                <attribute name="Specification-Vendor"
+                           value="${spec.vendor}"/>
+                <attribute name="Implementation-Title"
+                           value="${product.Name}"/>
+                <attribute name="Implementation-Version"
+                           value="${product.Version} built on ${TODAY} at ${TSTAMP} hrs"/>
+                <attribute name="Implementation-Vendor"
+                           value="${impl.vendor}"/>
+                <attribute name="Implementation-Vendor-Id"
+                           value="${impl.vendor-id}"/>
+            </manifest>
+            <metainf file="${docs.dir}/LICENSE"/>
+            <metainf file="${docs.dir}/GPL.txt"/>
+        </jar>
+
+        <jar destfile="${cadfilter.jar}"
+             basedir="${cadfilter.classes.dir}">
+            <manifest>
+                <attribute name="Built-By"
+                           value="${my.name} &lt;${my.email}&gt; of the ${nps}, ${moves.institute}, ${savage.research.group}"/>
+                <attribute name="Specification-Version"
+                           value="${product.Version}"/>
+                <attribute name="Specification-Vendor"
+                           value="${spec.vendor}"/>
+                <attribute name="Implementation-Title"
+                           value="${product.Name}"/>
+                <attribute name="Implementation-Version"
+                           value="${product.Version} built on ${TODAY} at ${TSTAMP} hrs"/>
+                <attribute name="Implementation-Vendor"
+                           value="${impl.vendor}"/>
+                <attribute name="Implementation-Vendor-Id"
+                           value="${impl.vendor-id}"/>
+            </manifest>
+            <metainf file="${docs.dir}/LICENSE"/>
+            <metainf file="${docs.dir}/GPL.txt"/>
+        </jar>
+
+        <copy file="apps/replica/src/java/xj3d/replica/images/Xj3dRenderCaptureFailed.png" todir="${replica.classes.dir}/xj3d/replica/images" verbose="true" overwrite="true"/>
+        <jar destfile="${replica.jar}"
+             basedir="${replica.classes.dir}">
+            <manifest>
+                <attribute name="Built-By"
+                           value="${my.name} &lt;${my.email}&gt; of the ${nps}, ${moves.institute}, ${savage.research.group}"/>
+                <attribute name="Specification-Version"
+                           value="${product.Version}"/>
+                <attribute name="Specification-Vendor"
+                           value="${spec.vendor}"/>
+                <attribute name="Implementation-Title"
+                           value="${product.Name}"/>
+                <attribute name="Implementation-Version"
+                           value="${product.Version} built on ${TODAY} at ${TSTAMP} hrs"/>
+                <attribute name="Implementation-Vendor"
+                           value="${impl.vendor}"/>
+                <attribute name="Implementation-Vendor-Id"
+                           value="${impl.vendor-id}"/>
+            </manifest>
+            <metainf file="${docs.dir}/LICENSE"/>
+            <metainf file="${docs.dir}/GPL.txt"/>
+        </jar>
+    </target>
+
+    <!--
+    =================
+    RUN CALLS SECTION
+    =================
+    -->
+
+    <!-- TODO: Provide a useful message if browser.class.present is false -->
+    <target name="check.run"
+            unless="browser.class.present"
+            depends="splash">
+
+        <echo message="Please rebuild Xj3D with a command line call to &quot;ant&quot;"/>
+
+    </target>
+
+    <target name="run"
+            depends="check.run"
+            if="browser.class.present"
+            description="Run the 3D Simulation Viewer App">
+
+        <!-- first look on command line, otherwise use ${scene} property from build.properties -->
+        <property name="args" value="${scene}"/>
+
+        <echo message="Xj3D launching ${args}"/>
+        <echo message="     main.class=${main.class}"/>
+        <echo message="     browser.dir=${browser.dir}"/>
+        <echo message="app.browser.args=${app.browser.args}"/>
+        
+        <!-- Working directory is apps/browser b/c that's where the javahelp helpset is -->
+        <java classname="${main.class}"
+              fork="true"
+              dir="${browser.dir}">
+
+            <!-- Comment out for native DIS handling -->
+            <!--sysproperty key="${dis.protocol.handler.prop}"
+                         value="${dis.xmpp.protocol.handler}"/-->
+            <jvmarg line="${run.args}"/>
+
+            <!-- Enable the Smack debugger -->
+            <!--jvmarg value="-Dsmack.debugEnabled=true"/-->
+            <classpath refid="app.classpath"/>
+            
+            <!-- test classpath of the distributed build -->
+            <!--classpath>
+                <fileset dir="${dist.dir}">
+                    <include name="*.jar"/>
+                    <exclude name="*src.jar"/>
+                </fileset>
+            </classpath-->
+
+            <!-- ${args} should be the full path to an X3D file -->
+            <!-- commandline given/supplied arguments args=%1 etc -->
+            <arg line="${app.browser.args} ${args}"/>
+
+        </java>
+
+    </target>
+
+    <target name="check.cadfilter"
+            unless="cadfilter.class.present"
+            depends="init">
+
+        <echo message="Please rebuild Xj3D with a command line call to &quot;ant&quot;"/>
+
+    </target>
+
+    <target name="run.cadfilter"
+            depends="check.cadfilter"
+            if="cadfilter.class.present"
+            description="Run the Xj3D Converter App">
+
+        <!-- first look on command line, otherwise use ${cadfilter.args} property from build.properties -->
+        <property name="cadfilter.in" value="${cadfilter.in}"/>
+
+        <echo message="Processing: ${cadfilter.in} to ${cadfilter.out}"/>
+
+        <!--java classname="xj3d.cdfviewer.CDFViewer"-->
+        <java classname="${cadfilter}"
+              fork="true"
+              dir="${cadfilter.dir}">
+
+            <jvmarg line="${run.args}"/>
+
+            <classpath refid="app.classpath"/>
+
+            <!-- args should be the full path to convertible file -->
+            <!-- commandline given/supplied arguments cadfilter.additional.args=%1 etc -->
+            <arg line="${cadfilter.filter} ${cadfilter.in} ${cadfilter.out} ${cadfilter.additional.args}"/>
+
+        </java>
+
+    </target>
+
+    <target name="run.xj3dfilter.ui"
+            depends="check.cadfilter"
+            description="A very handy UI to select filter types and run a conversion using the CDFFilter">
+        <java classname="xj3d.filter.ui.Xj3DFilter"
+              dir="${cadfilter.dir}"
+              fork="true">
+
+            <jvmarg line="${run.args}"/>
+            <classpath refid="app.classpath"/>
+        </java>
+    </target>
+
+    <target name="run.replica"
+            depends="init"
+            if="replica.class.present"
+            description="Run the Xj3D Replica App to create thumbnail image">
+
+        <delete dir="${replica.dir}/output"/>
+
+        <echo></echo>
+        <echo>Processing ${scene}</echo>
+        <echo message="java ${replica.dir}/${replica} testCapture ${scene}"/>
+        <echo message="app.replica.args=${app.replica.args}"/>
+        <echo message="run.args=${run.args}"/>
+        <echo></echo>
+
+        <java classname="${replica}" dir="${replica.dir}" fork="true">
+            <classpath refid="app.classpath"/>
+            <jvmarg line="${run.args}"/>
+            <arg line="${app.replica.args}"/>
+        </java>
+        <echo message="See ${replica.dir} (-outfile filename) for result"/>
+    </target>
+
+    <!--
+    =============
+    DEBUG SECTION
+    =============
+    -->
+
+    <target name="debug"
+            depends="compile,compile.apps"
+            if="browser.class.present"
+            description="Debug the program only from the NetBeans IDE">
+
+        <!-- If you have a class to compile that is not in src/java, then name it
+             here and uncommend the javac task >
+        <delete file="${examples.browser.dir}/X3DLoader.class"/>
+        <javac destdir="${examples.browser.dir}"
+               includes="X3DLoader.java"
+               source="1.5"
+               srcdir="${examples.browser.dir}"
+               includeantruntime="false"
+               debug="on"
+               fork="true">
+            <classpath refid="app.classpath"/>
+            <compilerarg value="-g"/>
+        </javac-->
+
+        <nbjpdastart addressproperty="jpda.address" name="Xj3D 2.0" transport="dt_socket">
+            <classpath refid="app.classpath"/>
+        </nbjpdastart>
+
+        <!-- ${entrypoint} -->
+
+        <java classname="${main.class}" fork="true" dir="${browser.dir}">
+        <!--java classname="${cadfilter}" fork="true" dir="${cadfilter.dir}"-->
+        <!--java classname="${network.tester}" fork="true" dir="${dis.dir}"-->
+
+            <classpath refid="app.classpath"/>
+            <jvmarg line="${run.args}"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xnoagent"/>
+            <jvmarg value="-Djava.compiler=none"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+
+            <!-- Enable the Smack debugger -->
+            <!--jvmarg value="-Dsmack.debugEnabled=true"/-->
+
+            <!-- Comment out for native DIS handling -->
+            <!--sysproperty key="${dis.protocol.handler.prop}"
+                         value="${dis.xmpp.protocol.handler}"/-->
+
+            <!-- full path to the X3D scene here, override with -Dx3d.file=%1 -->
+            <arg line="${app.browser.args} ${scene}"/>
+            <!--arg line="${cadfilter.filter} ${cadfilter.in} ${cadfilter.out} ${cadfilter.additional.args}"/-->
+            <!--arg line="${app.replica.args} testCapture ${scene}"/-->
+
+        </java>
+
+    </target>
+
+    <!--
+    =============
+    BUILD SECTION
+    =============
+    -->
+
+    <target name="build"
+            depends="timestamp,compile,compile.apps,build.mac,build.unix,build.win"
+            description="Build the full standalone OpenGL render version of Xj3D for your platform">
+
+        <echo message="Build date: ${DSTAMP}:${TSTAMP} " file="buildStamp.txt"/>
+    </target>
+
+    <target name="build.mac" if="isMac">
+
+        <copy todir=".">
+            <fileset dir="${bin.dir}">
+                <include name="browser.sh.command"/>
+                <include name="converter.sh"/>
+            </fileset>
+        </copy>
+
+        <chmod file="browser.sh.command" perm="ugo+rx"/>
+        <chmod file="converter.sh" perm="ugo+rx"/>
+    </target>
+
+    <target name="build.unix" if="isUnixNotMac">
+
+        <copy todir=".">
+            <fileset dir="${bin.dir}">
+                <include name="browser.sh"/>
+                <include name="converter.sh"/>
+            </fileset>
+        </copy>
+
+        <chmod file="browser.sh" perm="ugo+rx"/>
+        <chmod file="converter.sh" perm="ugo+rx"/>
+    </target>
+
+    <target name="build.win" if="isWindows">
+
+        <copy todir=".">
+            <fileset dir="${bin.dir}">
+                <include name="browser.bat"/>
+                <include name="converter.bat"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+    <!--
+    =================
+    UNIT TEST SECTION
+    =================
+    -->
+
+    <target name="test" depends="build,compile.tests" description="run junit tests of interest from build.xml">
+        <junit printsummary="yes" haltonerror="no" haltonfailure="no" showoutput="true" fork="true" dir=".">
+            <jvmarg line="${run.args}"/>
+            <formatter type="plain" usefile="false"/>
+
+            <batchtest fork="true">
+                <fileset dir="${build.test.classes.dir}">
+                    <include name="org/TestAllTestSuite.class"/>
+                </fileset>
+            </batchtest>
+
+            <classpath path="${run.test.classpath}" />
+        </junit>
+    </target>
+
+    <!--
+    ============
+    DIST SECTION
+    ============
+    -->
+
+    <target name="timestamp" if="version.file.present" depends="init">
+        <!-- This is a way to get our Version.java file compiled each time ant is run, -->
+        <!-- but not have it show up in SVN as modified -->
+        <copy file="${xj3d.version.file}" todir="."/>
+        <!-- put the build-time properties defined by the above step into our ${xj3d.version} file -->
+        <!-- look for, e.g., DSTAMP = "blah", replace the "blah" with current property value -->
+        <replaceregexp file="./${xj3d.version}.java"
+                       match="DSTAMP\s++=\s++&quot;.*&quot;"
+                       replace="DSTAMP = &quot;${DSTAMP}&quot;"/>
+        <echo message="DSTAMP = &quot;${DSTAMP}&quot;"/>
+        <replaceregexp file="./${xj3d.version}.java"
+                       match="TSTAMP\s++=\s++&quot;.*&quot;"
+                       replace="TSTAMP = &quot;${TSTAMP}&quot;"/>
+        <echo message="TSTAMP = &quot;${TSTAMP}&quot;"/>
+        <replaceregexp file="./${xj3d.version}.java"
+                       match="TODAY\s++=\s++&quot;.*&quot;"
+                       replace="TODAY = &quot;${TODAY}&quot;"/>
+        <echo message="TODAY = &quot;${TODAY}&quot;"/>
+        <javac destdir="${build.dir}"
+               srcdir="."
+               fork="true"
+               source="${javac.source}"
+               target="${javac.target}"
+               debug="on"
+               includes="${xj3d.version}.java"
+               classpathref="app.classpath"
+               includeantruntime="false">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+        <delete file="./${xj3d.version}.java"/>
+    </target>
+
+    <target name="javadoc"
+            depends="jjdoc"
+            description="Create the ${application.title} VRML/X3D Code API">
+
+        <delete dir="${dist.javadoc.dir}"/>
+        <mkdir dir="${dist.javadoc.dir}"/>
+        <javadoc author="${javadoc.author}"
+                 destdir="${dist.javadoc.dir}"
+                 version="${javadoc.version}"
+                 maxmemory="1024m"
+                 useexternalfile="true"
+                 source="${javac.source}"
+                 breakiterator="${javadoc.breakiterator}"
+                 noindex="${javadoc.noindex}"
+                 nonavbar="${javadoc.nonavbar}"
+                 notree="${javadoc.notree}"
+                 Private="${javadoc.private}"
+                 Use="${javadoc.use}"
+                 Encoding="${javadoc.encoding}"
+                 Splitindex="${javadoc.splitindex}"
+                 Overview="${src.java.dir}/overview.html"
+                 Windowtitle="${javadoc.windowtitle}"
+                 Doctitle="${javadoc.doctitle}"
+                 Header="${javadoc.doctitle}"
+                 bottom="${javadoc.copyright}">
+            <classpath refid="app.classpath"/>
+
+            <!-- These excludes will avoid most errors, but will have to be
+                 reviewed from time to time to follow Makefile-opengl javadoc
+                 build order -->
+			<!-- bugfix: https://stackoverflow.com/questions/16456786/not-able-to-create-javadoc-using-ant -->
+            <fileset dir="${src.java.dir}" defaultexcludes="yes" excludes="${xj3d.build.excludes}">
+				<include name="**/*.java" />
+                <exclude name="**/Makefile*"/>
+                <exclude name="**/task"/>
+                <exclude name="**/*.html"/>
+            </fileset>
+
+            <fileset dir="${browser.src.java.dir}" defaultexcludes="yes" excludes="${browser.build.excludes}">
+				<include name="**/*.java" />
+                <exclude name="**/Makefile*"/>
+                <exclude name="**/package.html"/>
+                <exclude name="**/*.properties"/>
+                <exclude name="**/xj3d/browser/renderer/**"/>
+            </fileset>
+
+            <fileset dir="${cadfilter.src.java.dir}" defaultexcludes="yes" excludes="${cadfilter.build.excludes}">
+				<include name="**/*.java" />
+                <exclude name="**/Makefile*"/>
+                <exclude name="**/package.html"/>
+            </fileset>
+
+            <fileset dir="${replica.src.java.dir}" defaultexcludes="yes">
+				<include name="**/*.java" />
+                <exclude name="**/Makefile*"/>
+                <exclude name="**/package.html"/>
+            </fileset>
+
+            <!-- Updated link to the JDK 1.8 API (tdn) -->
+            <link href="${oracle.javadoc.link}"/>
+
+        </javadoc>
+
+        <!-- Copy over the BNF docs from the Parsers -->
+        <copy todir="${dist.javadoc.dir}/org/web3d/parser/vrml97/doc-files">
+            <fileset dir="${jjdoc.vrml.dir}">
+                <include name="*.html"/>
+            </fileset>
+        </copy>
+        <copy todir="${dist.javadoc.dir}/org/web3d/parser/x3d/doc-files">
+            <fileset dir="${jjdoc.x3d.dir}">
+                <include name="*.html"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="jjdoc"
+            depends="init"
+            description="Create the ${application.title} Parsers API">
+
+        <delete dir="${jjdoc.vrml.dir}"/>
+        <delete dir="${jjdoc.x3d.dir}"/>
+
+        <mkdir dir="${jjdoc.vrml.dir}"/>
+        <mkdir dir="${jjdoc.x3d.dir}"/>
+
+        <!-- Ant's jjdoc eems to only print HTML out to the screen only.  Can't find any bug report -->
+        <!--jjdoc target="${src.dir}/javacc/vrml/VRML97FieldParser.jj"
+               outputfile="${jjdoc.vrml.dir}/VRML97Field.html"
+               javacchome="${javacc.home}"/>
+
+        <jjdoc target="${src.dir}/javacc/vrml/VRML97RelaxedParser.jj"
+               outputfile="${jjdoc.vrml.dir}/VRML97Relaxed.html"
+               javacchome="${javacc.home}"/>
+
+        <jjdoc target="${src.dir}/javacc/x3d/X3DFieldParser.jj"
+               outputfile="${jjdoc.x3d.dir}/X3DField.html"
+               javacchome="${javacc.home}"/>
+
+        <jjdoc target="${src.dir}/javacc/x3d/X3DRelaxedParser.jj"
+               outputfile="${jjdoc.x3d.dir}/X3DRelaxed.html"
+               javacchome="${javacc.home}"/-->
+
+        <java classpath="${javacc.home}/bin/lib/javacc.jar"
+              classname="jjdoc">
+            <arg value="-OUTPUT_FILE=${jjdoc.vrml.dir}/VRML97Field.html"/>
+            <arg value="${src.dir}/javacc/vrml/VRML97FieldParser.jj"/>
+        </java>
+        <java classpath="${javacc.home}/bin/lib/javacc.jar"
+              classname="jjdoc">
+            <arg value="-OUTPUT_FILE=${jjdoc.vrml.dir}/VRML97Relaxed.html"/>
+            <arg value="${src.dir}/javacc/vrml/VRML97RelaxedParser.jj"/>
+        </java>
+        <java classpath="${javacc.home}/bin/lib/javacc.jar"
+              classname="jjdoc">
+            <arg value="-OUTPUT_FILE=${jjdoc.x3d.dir}/X3DField.html"/>
+            <arg value="${src.dir}/javacc/x3d/X3DFieldParser.jj"/>
+        </java>
+        <java classpath="${javacc.home}/bin/lib/javacc.jar"
+              classname="jjdoc">
+            <arg value="-OUTPUT_FILE=${jjdoc.x3d.dir}/X3DRelaxed.html"/>
+            <arg value="${src.dir}/javacc/x3d/X3DRelaxedParser.jj"/>
+        </java>
+
+    </target>
+
+    <target name="pack.3rd.party.jars" depends="init">
+        <mkdir dir="${marshall.dir}"/>
+
+        <!-- Everything in ${lib.dir}/support is not included -->
+        <!-- imageloader_1.1.0.jar requires a 64 bit native to work on 64 bit
+             architectures. Buildling a 64 bit native may be accomplished by
+             accessing source code at:
+             https://github.com/Virtual-Light-Company/ImageLoader -->
+        <!-- jhall.jar only required for the Xj3D Browser app, so, it is
+             included separately -->
+        <jar destfile="${marshall.dir}/temp.jar" filesetmanifest="skip">
+            <zipgroupfileset dir="${lib.dir}"
+                             includes="*.jar"
+                             excludes="imageloader_1.1.0.jar jhall.jar">
+            </zipgroupfileset>
+            <manifest>
+                <attribute name="Built-By"
+                           value="${my.name} &lt;${my.email}&gt; of the ${savage.research.group} of the ${moves.institute} at the ${nps}"/>
+                <attribute name="Build-Date"
+                           value="${TODAY} at ${TSTAMP} hrs"/>
+                <attribute name="X-COMMENT"
+                           value="${x.comment}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="dist"
+            depends="build,jar,jar.apps,pack.3rd.party.jars"
+            description="Clean, then build distributable jars">
+
+        <echo message="build dist dependencies complete, starting dist tasks"/>
+
+        <!-- copy over additional jars (from task jar.apps) to same directory for path convenience when building X3D Examples -->
+        <copy file="${browser.jar}"   todir="${dist.dir}" verbose="true"/>
+        <copy file="${cadfilter.jar}" todir="${dist.dir}" verbose="true"/>
+        <copy file="${replica.jar}"   todir="${dist.dir}" verbose="true"/>
+        <copy todir="${dist.dir}">
+            <fileset dir="${lib.dir}">
+                <include name="jhall.jar"/>
+            </fileset>
+        </copy>
+
+        <echo message="Packaging all third party dependencies into a single JAR at ${xj3d.3rdparty.jar}"/>
+
+        <!-- Make one giant combined third party jar file for convenience -->
+        <!-- Derived from: http://java.sun.com/developer/technicalArticles/java_warehouse/single_jar/ -->
+        <zip destfile="${xj3d.3rdparty.jar}">
+
+            <!-- These belong in vecmath.jar, but will cause ClassLoading
+                 problems since the hashes won't match -->
+            <!--exclude name="META-INF/SUN_MICR*"/-->
+
+            <zipfileset src="${marshall.dir}/temp.jar"
+                        excludes="javadoc/**
+                                  META-INF/maven/**,
+                                  META-INF/SUN_MICR*,
+                                  odejavalog4j.properties,
+                                  test*/**,
+                                  toxiclibscore.mf,
+                                  XPP3*"/>
+        </zip>
+        <delete dir="${marshall.dir}"/>
+
+        <!-- Jar up core and apps source files for debugging reference -->
+        <jar destfile="${dist.src.jar}">
+            <manifest>
+                <attribute name="Built-By"
+                           value="${my.name} &lt;${my.email}&gt; of the ${savage.research.group} of the ${moves.institute} at the ${nps}"/>
+                <attribute name="Specification-Version"
+                           value="${product.Version}"/>
+                <attribute name="Specification-Vendor"
+                           value="${spec.vendor}"/>
+                <attribute name="Implementation-Title"
+                           value="${product.Name}"/>
+                <attribute name="Implementation-Version"
+                           value="${product.Version} built on ${TODAY} at ${TSTAMP} hrs"/>
+                <attribute name="Implementation-Vendor"
+                           value="${impl.vendor}"/>
+                <attribute name="Implementation-Vendor-Id"
+                           value="${impl.vendor-id}"/>
+            </manifest>
+            <metainf file="${docs.dir}/LICENSE"/>
+            <metainf file="${docs.dir}/LGPL.txt"/>
+
+            <fileset dir="${src.java.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </jar>
+
+        <jar destfile="${browser.src.jar}">
+            <manifest>
+                <attribute name="Built-By"
+                           value="${my.name} &lt;${my.email}&gt; of the ${savage.research.group} of the ${moves.institute} at the ${nps}"/>
+                <attribute name="Specification-Version"
+                           value="${product.Version}"/>
+                <attribute name="Specification-Vendor"
+                           value="${spec.vendor}"/>
+                <attribute name="Implementation-Title"
+                           value="${product.Name}"/>
+                <attribute name="Implementation-Version"
+                           value="${product.Version} built on ${TODAY} at ${TSTAMP} hrs"/>
+                <attribute name="Implementation-Vendor"
+                           value="${impl.vendor}"/>
+                <attribute name="Implementation-Vendor-Id"
+                           value="${impl.vendor-id}"/>
+            </manifest>
+            <metainf file="${docs.dir}/LICENSE"/>
+            <metainf file="${docs.dir}/LGPL.txt"/>
+
+            <fileset dir="${browser.src.java.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </jar>
+
+        <jar destfile="${cadfilter.src.jar}">
+            <manifest>
+                <attribute name="Built-By"
+                           value="${my.name} &lt;${my.email}&gt; of the ${savage.research.group} of the ${moves.institute} at the ${nps}"/>
+                <attribute name="Specification-Version"
+                           value="${product.Version}"/>
+                <attribute name="Specification-Vendor"
+                           value="${spec.vendor}"/>
+                <attribute name="Implementation-Title"
+                           value="${product.Name}"/>
+                <attribute name="Implementation-Version"
+                           value="${product.Version} built on ${TODAY} at ${TSTAMP} hrs"/>
+                <attribute name="Implementation-Vendor"
+                           value="${impl.vendor}"/>
+                <attribute name="Implementation-Vendor-Id"
+                           value="${impl.vendor-id}"/>
+            </manifest>
+            <metainf file="${docs.dir}/LICENSE"/>
+            <metainf file="${docs.dir}/LGPL.txt"/>
+
+            <fileset dir="${cadfilter.src.java.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </jar>
+
+    </target>
+
+    <target name="all" depends="clean,build,javadoc,build.installers,test"
+            description="complete clean/build ready for distribution and deployment">
+        <!-- build.dist to create a distributable Xj3D complete with documentation -->
+        <!-- build.dist does not include javadoc in installers, but javadoc  might detect errors -->
+    </target>
+
+    <target name="all.release" depends="all,dist,build.installers,upload.release.Sourceforge"
+            description="release distribution and deployment">
+        <!-- build.dist to create a distributable Xj3D complete with documentation -->
+        <!-- build.dist does not include javadoc in installers, but javadoc  might detect errors -->
+    </target>
+
+    <!--
+    =================
+    UTILITIES SECTION
+    =================
+    -->
+
+    <target name="hudson" depends="all" description="Perform continuous integration server testing">
+
+        <!-- copy dist .jars, docs/javadoc and installers to public directory for further reuse -->
+        <copy todir="/var/www/html/Xj3D.nps/jars" verbose="true">
+            <fileset dir="${dist.dir}"/>
+        </copy>
+        <copy todir="/var/www/html/Xj3D.nps/installers" verbose="true">
+            <fileset dir="installers"/>
+        </copy>
+        <echo message="copying documentation..."/>
+        <copy todir="/var/www/html/Xj3D.nps/docs" verbose="false">
+            <fileset dir="${docs.dir}"/>
+        </copy>
+        <echo message="https://savage.nps.edu/hudson/job/Xj3dSourceNpsBranch"/>
+        <!--
+        Hudson project description
+        https://savage.nps.edu/hudson/job/Xj3dSourceNpsBranch
+
+<p>
+Builds the
+<a href="https://savage.nps.edu/developers.html#Xj3D" target="_blank">NPS branch</a> of modifications to the <a href="http://www.xj3d.org" target="_blank">Xj3D viewer</a> for X3D graphics.  Local compilation and build details are available in the <a href="http://svn.xj3d.org/xj3d_code/branches/NPS/docs/NPS-build-procedures-for-Xj3D.txt" target="_blank">NPS-build-procedures-for-Xj3D.txt</a> README file.
+</p>
+<p>
+Locally built project
+<a href="ws/NPS/installers">installers</a>,
+<a href="ws/NPS/jars">jars</a>,
+<a href="ws/NPS/docs/arch/overview.html">documentation</a>
+and
+<a href="ws/NPS/docs/javadoc/index.html">javadoc</a>
+are available here.
+</p>
+
+<p>
+Published project
+<a href="https://savage.nps.edu/Xj3D.nps/installers/">installers</a>,
+<a href="https://savage.nps.edu/Xj3D.nps/jars">jars</a>,
+<a href="https://savage.nps.edu/Xj3D.nps/docs/arch/overview.html">documentation</a>
+and
+<a href="https://savage.nps.edu/Xj3D.nps/docs/javadoc/">javadoc</a>
+are available externally.
+</p>
+
+<p>
+<a href="https://savage.nps.edu/Savage/developers.html#Xj3D">Xj3D viewer: NPS source branch</a>
+lists details and further links as part of the
+<a href="https://savage.nps.edu/Savage/developers.html">Savage Developers Guide</a>.
+</p>
+        -->
+    </target>
+
+    <target name="diff.with.trunk"
+            description="Perform an SVN diff of the NPS branch against the trunk to denote any deviations">
+
+        <!-- requires access tp native version of 'svn' executable on local system -->
+
+        <!-- create a difflog.txt in the base directory of the differences -->
+        <exec executable="svn" dir="." logError="true" output="${difflog}">
+            <arg line="${diff.cmd}"/>
+        </exec>
+
+        <!-- now output results to screen -->
+        <concat>
+            <filelist dir="." files="${difflog}"/>
+        </concat>
+        <!-- TODO insert timestamp in output filename difflog.txt, maybe add a clean.diffs target too -->
+        <!-- TODO diff the diff files to see what changed ?! -->
+
+    </target>
+
+    <!-- Invoke this from time to time to get the latest DTDs which Xj3D uses to validate X3D scenes -->
+    <target name="get.latest.DTDs" description="Download latest DTD files from version control">
+
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.0-InputOutputFields.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.0-InputOutputFields.dtd"             verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.0-Web3dExtensions.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.0-Web3dExtensions.dtd"               verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.0-Web3dExtensionsPrivate.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.0-Web3dExtensionsPrivate.dtd"        verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.0-Web3dExtensionsPublic.Specification.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.0-Web3dExtensionsPublic.Specification.dtd"               verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.0-Web3dExtensionsPublic.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.0-Web3dExtensionsPublic.dtd"         verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.0.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.0.dtd"               verbose="true"/>
+
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.1-InputOutputFields.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.1-InputOutputFields.dtd"             verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.1-Web3dExtensionsPrivate.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.1-Web3dExtensionsPrivate.dtd"        verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.1-Web3dExtensionsPublic.Specification.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.1-Web3dExtensionsPublic.Specification.dtd"               verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.1-Web3dExtensionsPublic.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.1-Web3dExtensionsPublic.dtd"         verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.1.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.1.dtd"               verbose="true"/>
+
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.2-InputOutputFields.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.2-InputOutputFields.dtd"             verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.2-Web3dExtensionsPrivate.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.2-Web3dExtensionsPrivate.dtd"        verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.2-Web3dExtensionsPublic.Specification.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.2-Web3dExtensionsPublic.Specification.dtd"               verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.2-Web3dExtensionsPublic.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.2-Web3dExtensionsPublic.dtd"         verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.2.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.2.dtd"               verbose="true"/>
+
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.3-InputOutputFields.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.3-InputOutputFields.dtd"             verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.3-Web3dExtensionsPrivate.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.3-Web3dExtensionsPrivate.dtd"        verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.3-Web3dExtensionsPublic.Specification.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.3-Web3dExtensionsPublic.Specification.dtd"               verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.3-Web3dExtensionsPublic.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.3-Web3dExtensionsPublic.dtd"         verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-3.3.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-3.3.dtd"               verbose="true"/>
+
+        <get src="${x3d.sourceforge.site}/specifications/x3d-4.0-InputOutputFields.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-4.0-InputOutputFields.dtd"             verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-4.0-Web3dExtensionsPrivate.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-4.0-Web3dExtensionsPrivate.dtd"        verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-4.0-Web3dExtensionsPublic.Specification.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-4.0-Web3dExtensionsPublic.Specification.dtd"               verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-4.0-Web3dExtensionsPublic.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-4.0-Web3dExtensionsPublic.dtd"         verbose="true"/>
+        <get src="${x3d.sourceforge.site}/specifications/x3d-4.0.dtd"
+                             dest="${X3dDtdsSchemas.dir}/x3d-4.0.dtd"               verbose="true"/>
+    </target>
+
+    <!--
+    =============
+    CLEAN SECTION
+    =============
+    -->
+
+    <target name="clean.parsers">
+        <delete>
+            <fileset dir="${src.java.dir}/org/web3d/parser/vrml97">
+                <include name="JavaCharStream.java"/>
+                <include name="ParseException.java"/>
+                <include name="Token.java"/>
+                <include name="TokenMgrError.java"/>
+                <include name="VRML97FieldParser.java"/>
+                <include name="VRML97FieldParserConstants.java"/>
+                <include name="VRML97FieldParserTokenManager.java"/>
+                <include name="VRML97RelaxedParser.java"/>
+                <include name="VRML97RelaxedParserConstants.java"/>
+                <include name="VRML97RelaxedParserTokenManager.java"/>
+            </fileset>
+            <fileset dir="${src.java.dir}/org/web3d/parser/x3d">
+                <include name="JavaCharStream.java"/>
+                <include name="ParseException.java"/>
+                <include name="Token.java"/>
+                <include name="TokenMgrError.java"/>
+                <include name="X3DFieldParser.java"/>
+                <include name="X3DFieldParserConstants.java"/>
+                <include name="X3DFieldParserTokenManager.java"/>
+                <include name="X3DRelaxedParser.java"/>
+                <include name="X3DRelaxedParserConstants.java"/>
+                <include name="X3DRelaxedParserTokenManager.java"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="clean.ogl">
+        <delete dir="${build.classes.dir}" failonerror="false"/>
+        <!--delete dir="${dist.dir}"          failonerror="false"/-->
+    </target>
+
+    <target name="clean.apps">
+        <!-- Any extras that clean didn't get by default -->
+        <delete dir="${browser.classes.dir}"/>
+        <delete dir="${browser.jars.dir}"/>
+        <delete dir="${browser.docs.dir}"/>
+        <delete dir="${cadfilter.classes.dir}"/>
+        <delete dir="${cadfilter.jars.dir}"/>
+        <delete dir="${cadfilter.docs.dir}"/>
+        <delete dir="${replica.classes.dir}"/>
+        <delete dir="${replica.jars.dir}"/>
+        <delete dir="${replica.docs.dir}"/>
+        <delete dir="${replica.dir}/output"/>
+    </target>
+
+    <target name="clean.examples.and.parsetest">
+        <delete dir="${test.products.dir}"/>
+        <delete>
+            <fileset dir="${examples.dir}" includes="**/*.class"/>
+        </delete>
+        <delete>
+            <fileset dir="${parsetest.dir}" includes="**/*.class"/>
+        </delete>
+        <delete>
+            <fileset dir="${parsetest.sai.external.dir}">
+                <include name="output.x3d"/>
+            </fileset>
+        </delete>
+        <!-- These are auto-generated by X3DNodeGen -->
+        <delete dir="${parsetest.sai.external.dir}/node"/>
+    </target>
+
+    <target name="clean" depends="clean.parsers,clean.ogl,clean.apps,clean.examples.and.parsetest,clean.installer.materials">
+
+        <delete file="buildStamp.txt"/>
+        <delete file="${difflog}"/>
+        <delete file="${filtered.scene}"/>
+
+        <delete>
+            <fileset dir=".">
+                <include name="browser.*"/>
+                <include name="converter.*"/>
+                <include name="${nps.xj3d.project}.zip"/>
+            </fileset>
+        </delete>
+
+    </target>
+
+    <target name="jenkins" depends="hudson">
+<!--
+        Jenkins project description
+        https://savage.nps.edu/jenkins/job/Xj3dSourceNpsBranch
+
+<p>
+Builds the
+  <a href="https://savage.nps.edu/Savage/developers.html#Xj3D" target="_blank">NPS branch</a>
+  of modifications to the <a href="http://www.xj3d.org" target="_blank">Xj3D viewer</a>
+  for X3D graphics.  Local compilation and build details are available in the
+  <a href="http://svn.xj3d.org/xj3d_code/branches/NPS/docs/NPS-build-procedures-for-Xj3D.txt" target="_blank">NPS-build-procedures-for-Xj3D.txt</a>
+  README file.
+</p>
+<p>
+Locally built project
+<a href="ws/NPS/installers">installers</a>,
+<a href="ws/NPS/jars">jars</a>,
+<a href="ws/NPS/docs/arch/overview.html">documentation</a>
+and
+<a href="ws/NPS/docs/javadoc/index.html">javadoc</a>
+are available here.
+</p>
+
+<p>
+Published project
+<a href="https://savage.nps.edu/Xj3D.nps/installers/">installers</a>,
+<a href="https://savage.nps.edu/Xj3D.nps/jars">jars</a>,
+<a href="https://savage.nps.edu/Xj3D.nps/docs/arch/overview.html">documentation</a>
+and
+<a href="https://savage.nps.edu/Xj3D.nps/docs/javadoc/">javadoc</a>
+are available externally.
+</p>
+
+<p>
+<a href="https://savage.nps.edu/Savage/developers.html#Xj3D">Xj3D viewer: NPS source branch</a>
+lists details and further links as part of the
+<a href="https://savage.nps.edu/Savage/developers.html">Savage Developers Guide</a>.
+</p>
+
+
+<p>
+Nearby:
+<a href="../Xj3dSourceTrunk">Xj3D Source Trunk</a> project
+</p>
+-->
+    </target>
+
+    <target name="javadoc.view.local" description="view local javadoc API in web browser (Netbeans only)">
+        <nbbrowse file="${dist.javadoc.dir}/index.html" />
+    </target>
+
+    <!-- private configuration properties:  server names, user names and key file local location ====================== -->
+
+    <property name=             "access.properties.filename"  value="access.properties"/>
+    <property file="installers/${access.properties.filename}"/> <!-- loads the properties defined in the .properties file -->
+    <property name="keyfile.location.sourceforge" value="${keyfile.location.local}"/>
+    <!-- ======================================================================================== -->
+
+    <target name="upload.release.Sourceforge" description="upload release to Sourceforge Xj3D project">
+        <!-- https://sourceforge.net/p/forge/documentation/Release%20Files%20for%20Download/#scp -->
+        <!-- scp file.zip jsmith@frs.sourceforge.net:/home/frs/project/fooproject/Rel_1 -->
+
+        <echo message="upload installers: scp ${username.sourceforge}@${scpServer.sourceforge}:${scpDirectory.sourceforge}"/>
+   <!-- <echo message="keyfile.location.sourceforge=${keyfile.location.sourceforge}"/> -->
+        <scp sftp="true"
+             remotetodir="${username.sourceforge}@${scpServer.sourceforge}:${scpDirectory.sourceforge}/.." keyfile="${keyfile.location.sourceforge}"
+            trust="true" verbose="true" preserveLastModified="true">
+            <fileset dir="installers">
+                <include name="README.installers.txt"/>
+                <!-- excluding these -->
+                <exclude name="access.properties*"/>
+            </fileset>
+        </scp>
+        <scp sftp="true"
+             remotetodir="${username.sourceforge}@${scpServer.sourceforge}:${scpDirectory.sourceforge}" keyfile="${keyfile.location.sourceforge}"
+            trust="true" verbose="true" preserveLastModified="true">
+            <fileset dir="installers">
+                <include name="README.txt"/>
+                <include name="xj3d-2.1-nps-win-linux-32-64-installer.jar"/>
+                <include name="xj3d-2.1-nps-macosx-installer.jar"/>
+                <!-- excluding these -->
+                <exclude name="access.properties*"/>
+            </fileset>
+        </scp>
+        <echo message="upload.release.Sourceforge complete."/>
+    </target>
+
+    <!-- ======================================================================================== -->
+
+</project>

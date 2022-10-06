@@ -1,0 +1,18 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Shape {
+   appearance DEF FOO_APP Appearance {}
+   geometry Box {}
+}
+
+DEF FOO2 Transform {
+   translation 0 2 0
+   children [
+      Shape {
+         appearance DEF FOO2_APP Appearance { }
+         geometry Sphere {}
+      }
+   ]
+ }

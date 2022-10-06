@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<X3D profile="Immersive">
+  <Scene>
+    <NavigationInfo type="EXAMINE"/>
+    <Group>
+      <Shape>
+        <IndexedTriangleSet index="0 1 2">
+          <Coordinate>
+            <fieldValue count="9" name="point">
+                0 0 0, 1 0 0, 0 1 0 
+            </fieldValue>
+          </Coordinate>
+        </IndexedTriangleSet>
+      </Shape>
+    </Group>
+  </Scene>
+</X3D>

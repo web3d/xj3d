@@ -1,0 +1,44 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Viewpoint { description "VP1" }
+DEF VP2 Viewpoint {
+   description "VP2"
+   position 0 0 5
+}
+
+Shape {
+  geometry Box {}
+  appearance Appearance {
+    material Material {
+      diffuseColor 1 0 0
+    }
+  }
+}
+
+Transform {
+  rotation 0 1 0 0.78
+  translation 4 0 0
+  children Shape {
+    geometry Box {}
+    appearance Appearance {
+      material Material {
+        diffuseColor 0 1 0
+      }
+    }
+  }
+}
+
+Transform {
+  rotation 0 1 0 0.78
+  translation -4 0 0
+  children Shape {
+    geometry Box {}
+    appearance Appearance {
+      material Material {
+        diffuseColor 0 0 1
+      }
+    }
+  }
+}

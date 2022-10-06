@@ -1,0 +1,11 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Shape {
+   geometry Box {}
+}
+
+Shape {
+   geometry Sphere {}
+}

@@ -1,0 +1,129 @@
+#X3D V3.3 utf8
+
+PROFILE Immersive
+COMPONENT EXT_Grouping:1
+
+# Run RemoveUnused DEF's first
+
+Transform {
+   translation 0 2 0
+   children [
+	Transform {
+	   translation 1 2 3
+	   children [
+	      DEF SHAPE0 Shape {    # Don't fold this because its DEF so its reused
+		    geometry IndexedFaceSet {
+		      coord Coordinate {
+			point [1 0 -1, -1 0 -1, 0 1 -1]
+		      }
+		      coordIndex [ 0 2 1 ]
+		    }
+		      }
+	   ]
+	}
+   ]
+}
+
+#Do nothing at all with this
+DEF TRANS0 Transform {
+   translation 1 2 3
+   children [
+      Transform {
+         scale 2 2 2
+         children [
+            USE SHAPE0
+         ]
+      }
+   ]
+}
+
+Transform {
+   translation 1 2 3
+   children [
+      Transform {     # Fold these two together
+         scale 2 2 2
+         children [
+            USE SHAPE0
+         ]
+      }
+   ]
+}
+
+
+Transform {
+   translation 1 2 3
+   children [
+      Transform { 
+         scale 2 2 2
+         children [
+	      Shape {
+		    geometry IndexedFaceSet {
+		      coord Coordinate {
+			point [1 0 -1, -1 0 -1, 0 1 -1]
+		      }
+		      coordIndex [ 0 2 1 ]
+		    }
+		      }            
+         ]
+      }
+   ]
+}
+    
+Shape {}    # Should get no transform
+
+Switch {
+   children [
+      Transform {
+         translation 1 2 0
+         children [
+            Shape {}
+         ]
+      }
+   ]
+}
+
+Switch {
+   children [
+      Transform {
+         translation 1 2 0
+         children [
+            Shape {}
+         ]
+      }
+      Transform {
+         translation 1 3 0
+         children [
+            Shape {}
+         ]
+      }
+      
+   ]
+}
+
+Transform {
+   translation 1 5 0
+   children [
+      Shape {}
+      Shape {}
+   ]
+}
+
+Transform {
+   scale 1 2 3
+   childern [
+      Transform {
+         translation 1 5 0
+         children [
+            Shape {}
+            Shape {}
+         ]
+      }
+      
+      Shape {}
+   ]
+}
+
+DEF POS1 PositionInterpolator {
+}
+
+ROUTE POS1.position_changed TO TRANS0.set_translation

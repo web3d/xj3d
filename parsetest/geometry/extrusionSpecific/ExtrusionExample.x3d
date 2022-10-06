@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.1//EN" "http://www.web3d.org/specifications/x3d-3.1.dtd">
+<X3D profile='Immersive' version='3.1' xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='http://www.web3d.org/specifications/x3d-3.1.xsd'>
+  <head>
+    <meta content='ExtrusionExample.x3d' name='title'/>
+    <meta content='Using CoordinateInterpolator2D - click geometry to activate animation loop' name='description'/>
+    <meta name='creator' content='Eric Fickenscher'/>
+    <meta name='created' content='September 2008'/>
+    <meta name='subject' content='four extrusion examples'/>
+    <meta name='generator' content='X3D-Edit 3.2, https://savage.nps.edu/X3D-Edit'/>
+    <meta name='license' content='../../license.html'/> 
+    <!-- Additional authoring resources for meta-tags: http://www.dublincore.org/documents/dcmi-terms http://www.dublincore.org/documents/dces http://www.w3.org/TR/html4/struct/global.html#h-7.4.4 http://vancouver-webpages.com/META http://vancouver-webpages.com/META/about-mk-metas2.html Additional authoring resources for language codes: ftp://ftp.isi.edu/in-notes/bcp/bcp47.txt http://www.loc.gov/standards/iso639-2/langhome.html http://www.iana.org/numbers.html#L -->
+  </head> 
+  <Scene>
+    <Background
+            groundAngle='1.53, 1.57'
+            groundColor='0.45 0.15 0.35, 0.5 0.4 0.34, 0.05 0.15 0.05'
+            skyAngle='1.4, 1.5'
+            skyColor='0.05 0.15 .6, 0.5 0.5 1, 0.05 0.15 .4' />
+            
+        <!--This shape uses the default cross section with a 'lowered' spine-->
+        <Transform translation = '-1.2 0 0'>
+        <Shape DEF='clockwiseSquare'>
+		<Appearance>
+			<Material ambientIntensity='0.91' diffuseColor='0.7 0.65 0.2' shininess='0.92'/>
+		</Appearance>
+                <Extrusion DEF='loweredYellowCube'
+                    spine = '0 0 0, 0 -1 0'
+                />
+	</Shape>
+        </Transform>
+        <!--This shape uses the default cross section with the default spine-->
+        <Transform translation = '-3.4 0 0'>
+        <Shape DEF='clockwiseSquare2'>
+		<Appearance>
+			<Material ambientIntensity='0.91' diffuseColor='0.7 0.65 0.2' shininess='0.92'/>
+		</Appearance>
+                <Extrusion DEF='raisedYellowCube'/>
+	</Shape>
+        </Transform>
+        <!--This shape uses a clockwise cross section with a 'dropped' spine-->
+        <Transform translation = '1.2 0 0'>
+        <Shape DEF='counterClockwiseSquare'>
+		<Appearance><Material ambientIntensity='0.91' diffuseColor='0.8 0.2 0.2' shininess='0.92'/>
+		</Appearance>
+                <Extrusion DEF='redCube'
+                    crossSection = '1 1, -1 1, -1 -1, 1 -1, 1 1'
+                    spine = '0 0 0, 0 -1 0'
+                    ccw = 'false'
+                />
+	</Shape>
+    </Transform>
+    <!--This shape uses a clockwise cross section with a default spine-->
+    <Transform translation = '3.4 0 0'>
+        <Shape DEF='counterClockwiseSquare2'>
+		<Appearance><Material ambientIntensity='0.91' diffuseColor='0.8 0.2 0.2' shininess='0.92'/>
+		</Appearance>
+                <Extrusion DEF='redCube2'
+                    crossSection = '1 1, -1 1, -1 -1, 1 -1, 1 1'
+                    ccw = 'false'
+                />
+	</Shape>
+    </Transform>
+    <Transform translation='-4 -2 0'>
+        <Billboard  bboxSize = '8 2 2'
+                    axisOfRotation='0 0 0'>
+            <Shape>
+                <Text string='"The yellow shapes use the" "default ccw cross section," "1 1, 1 -1, -1 -1, -1 1 1 1"' solid='true'>
+                    <FontStyle family='SANS' justify='"MIDDLE" "MIDDLE"' size='0.4'/>
+                </Text>
+                <Appearance>
+                    <Material ambientIntensity='0.91' diffuseColor='0.7 0.65 0.2' shininess='0.92'/>
+                </Appearance>
+            </Shape>
+        </Billboard>
+    </Transform>
+    <Transform translation='4 2 0'>
+        <Billboard  bboxSize = '8 2 2'
+                    axisOfRotation='0 0 0'>
+            <Shape>
+                <Text string='"The red shapes use a" "clockwise cross section," "1 1, -1 1, -1 -1, 1 -1, 1 1"' solid='true'>
+                    <FontStyle family='SANS' justify='"MIDDLE" "MIDDLE" "MIDDLE"' size='0.4'/>
+                </Text>
+                <Appearance>
+                    <Material ambientIntensity='0.91' diffuseColor='0.8 0.2 0.2' shininess='0.92'/>
+                </Appearance>
+            </Shape>
+        </Billboard>
+    </Transform>
+<Transform translation='-4 2 0'>
+        <Billboard  bboxSize = '8 2 2'
+                    axisOfRotation='0 0 0'>
+            <Shape>
+                <Text string='"The upper shapes use the" "default (upwards) spine," "0 0 0, 0 1 0"' solid='true'>
+                    <FontStyle family='SANS' justify='"MIDDLE" "MIDDLE" "MIDDLE"' size='0.4'/>
+                </Text>
+                <Appearance>
+                    <Material ambientIntensity='0.91' diffuseColor='0 0 0' shininess='0.92'/>
+                </Appearance>
+            </Shape>
+        </Billboard>
+    </Transform>
+    <Transform translation='4 -2 0'>
+        <Billboard  bboxSize = '8 2 2'
+                    axisOfRotation='0 0 0'>
+            <Shape>
+                <Text string='"The lower shapes use a" "dropped-downwards spine," "0 0 0, 0 -1 0"' solid='true'>
+                    <FontStyle family='SANS' justify='"MIDDLE" "MIDDLE" "MIDDLE"' size='0.4'/>
+                </Text>
+                <Appearance>
+                    <Material ambientIntensity='0.91' diffuseColor='0 0 0' shininess='0.92'/>
+                </Appearance>
+            </Shape>
+        </Billboard>
+    </Transform>
+  </Scene>
+</X3D>

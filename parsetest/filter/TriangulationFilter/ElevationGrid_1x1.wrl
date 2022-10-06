@@ -1,0 +1,20 @@
+#VRML    V2.0 utf8
+
+Shape {
+   appearance Appearance {
+      material Material {
+            diffuseColor 0.0 0.0 1.0
+            specularColor 1.0 0.0 0.0
+      }
+
+   }
+   # xDimension zDimension must be at least 2 to create an ElevationGrid
+   geometry ElevationGrid {
+         height [-3.0 -3.0 -3.0 -3.0]
+         xDimension 2
+         xSpacing 4.0
+         zDimension 2
+         zSpacing 8.0
+   }
+
+}

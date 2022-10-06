@@ -1,0 +1,60 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+NavigationInfo {
+      headlight FALSE
+}
+
+DEF SL SpotLight {
+   location 0 0 2
+   direction 0 0 -1
+   beamWidth 0.3
+   on TRUE
+}
+
+Transform {
+  children [
+      Shape {
+         geometry Box { size 0.5 0.5 0.5 }
+         appearance Appearance {material Material { diffuseColor 1 1 0}}
+      }
+  ]
+}
+
+Transform {
+  translation 1.5 -2 0 
+  children [
+    DEF NEXT-TOUCH TouchSensor {}
+    Shape {
+      geometry Box { size 0.5 0.5 0.5 }
+      appearance Appearance {
+        material Material { emissiveColor 0 1 0 }
+      }
+    }
+  ]
+}
+
+Transform {
+  translation -1.5 -2 0 
+  children [
+    DEF PREV-TOUCH TouchSensor {}
+    Shape {
+      geometry Box { size 0.5 0.5 0.5 }
+      appearance Appearance {
+        material Material { emissiveColor 1 0 0 }
+      }
+    }
+  ]
+}
+            
+
+DEF Seq BooleanSequencer {
+  key [ 0, 0.33, 0.66, 1 ]
+  keyValue [FALSE TRUE FALSE TRUE]
+}
+
+ROUTE NEXT-TOUCH.isActive TO Seq.next
+ROUTE PREV-TOUCH.isActive TO Seq.previous
+
+ROUTE Seq.value_changed TO SL.set_on

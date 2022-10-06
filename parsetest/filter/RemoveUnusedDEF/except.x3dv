@@ -1,0 +1,18 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+DEF FOO Shape {
+   geometry DEF BOX Box {}
+}
+
+DEF PI PositionInterpolator {}
+
+Transform {
+   children [
+      Shape {
+         geometry USE BOX
+      }
+   ]
+}
+

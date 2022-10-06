@@ -1,0 +1,22 @@
+#X3D V3.0 utf8
+PROFILE Immersive
+Viewpoint {
+	description "Default"
+}
+Transform {    
+    children [  
+        Shape {  
+            geometry Text { 
+				string "If you can read this, the test has passed"
+			}  
+            appearance Appearance {  
+                material Material{    
+                    emissiveColor 1 0 0  
+                }  
+            }  
+        }
+		ProximitySensor {
+			size 10e30 10e30 10e30
+		}
+    ]  
+}

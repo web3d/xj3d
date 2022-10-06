@@ -1,0 +1,28 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+NavigationInfo {
+      type ["FLY","ANY"]
+      speed 0
+}
+Transform {
+      rotation 0.0 1.0 0.0 1.45
+      translation 0.0 0.0 10.0
+   children [Shape {
+      appearance Appearance {
+         texture ImageTexture {
+               url ["vts.jpg"]
+         }
+
+      }
+
+      geometry Cylinder {
+      	    solid FALSE
+            radius 10.0
+            height 10.0
+      }
+
+   }
+   ]
+}

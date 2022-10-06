@@ -1,0 +1,14 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Shape {
+   geometry TriangleSet {
+      ccw FALSE
+      coord Coordinate {
+            point [1.0 0.0 -1.0 ,-1.0 0.0 -1.0 ,-1.0 0.0 1.0,-12.0 0.0 1.0,24.0, 0.0, 0.0]
+      }
+
+   }
+
+}

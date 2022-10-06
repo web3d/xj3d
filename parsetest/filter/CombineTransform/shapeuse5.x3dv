@@ -1,0 +1,38 @@
+#X3D V3.3 utf8
+
+PROFILE Immersive
+COMPONENT EXT_Grouping:1
+
+# Run RemoveUnused DEF's first
+
+Transform {
+   translation 0 2 0
+   children [
+	Transform {
+	   translation 1 1 0
+	   children [
+	      DEF SHAPE0 Shape {    # Don't fold this because its DEF so its reused
+		    geometry IndexedFaceSet {
+		      coord Coordinate {
+			point [1 0 -1, -1 0 -1, 0 1 -1]
+		      }
+		      coordIndex [ 0 2 1 ]
+		    }
+		      }
+	   ]
+	}
+   ]
+}
+
+
+Transform {
+   translation 1 2 3
+   children [
+      Transform {     # Fold these two together
+         scale 2 2 2
+         children [
+            USE SHAPE0
+         ]
+      }
+   ]
+}

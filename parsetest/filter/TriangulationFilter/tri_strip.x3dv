@@ -1,0 +1,14 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Shape {
+   geometry TriangleStripSet {
+	stripCount [5]
+      coord Coordinate {
+            point [1.0 0.0 -1.0 ,-1.0 0.0 -1.0 ,-1.0 0.0 1.0 ,1.0 0.0 1.0 ,0.0 2.0 0.0]
+      }
+
+   }
+
+}

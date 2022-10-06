@@ -1,0 +1,23 @@
+#X3D V3.3 utf8
+
+PROFILE Immersive
+COMPONENT EXT_Grouping:1
+
+Switch {
+   whichChoice 0
+   children [
+Transform {
+   translation 1 2 1
+   children [
+Shape {      # Should get no transform
+   geometry IndexedFaceSet {
+      coord Coordinate {
+         point [1 0 -1, -1 0 -1, 0 1 -1]
+      }
+      coordIndex [ 0 2 1 ]
+   }
+}
+
+]}
+
+]}

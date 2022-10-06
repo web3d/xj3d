@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<X3D profile="Immersive" version="3.1">
+    <Scene>
+        <WorldInfo DEF="SceneWorldInfo" info="" title="Dynamic route bug"/>
+        <NavigationInfo type="WALK" />
+        <Transform DEF="redBox" translation="1 0 0">
+            <Shape>
+                <Appearance>
+                    <Material diffuseColor='1.0 0.0 0.0'/>
+                </Appearance> 
+                <Box size="1 1 1"/>
+            </Shape>
+            <TouchSensor DEF='TS' description='click change greenBox Color'/> 
+        </Transform>
+        <Transform DEF="greenBox" translation="-1 0 0">
+            
+            <Shape>
+                <Appearance>
+                    <Material DEF="greenBoxMaterial" diffuseColor='0.0 1.0 0.0'/>
+                </Appearance> 
+                <Box size="1 1 1"/>
+            </Shape>
+        </Transform>
+        <TimeSensor DEF="TIME" loop="true" />
+        <OrientationInterpolator DEF="OI" key="0,0.5,1" keyValue="0 1 0 0, 0 1 0 3.1415, 0 1 0 0" />
+        
+        <Script DEF="myScript" directOutput="true" mustEvaluate="true" url="AddRemoveRoute.class">
+            <field accessType="inputOnly" name="redBoxClicked" type="SFTime"/>
+        </Script>
+        <ROUTE fromField="touchTime" fromNode="TS" toField="redBoxClicked" toNode="myScript" />
+        <ROUTE fromField="fraction_changed" fromNode="TIME" toField="set_fraction" toNode="OI" />
+<!--         <ROUTE fromField="value_changed" fromNode="OI" toField="set_rotation" toNode="greenBox" /> -->
+    </Scene>
+</X3D>

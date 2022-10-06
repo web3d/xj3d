@@ -1,0 +1,16 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive 
+
+Anchor {
+  url [ "some_url_that_doesn't_exist.x3d"
+        "inlined_boxes.wrl"
+  ]
+  description "Bogus first URL, OK second URL"
+  children Shape {
+    geometry Box {}
+	appearance Appearance {
+	  material Material { diffuseColor 0.3 1 1 }
+	}
+  }
+}

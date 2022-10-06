@@ -1,0 +1,95 @@
+#X3D V3.3 utf8
+
+#TODO: Spec version will either be 3.3 or 4.0
+
+PROFILE Immersive
+COMPONENT CADGeometry:4
+
+ShellBrep {
+  closed FALSE
+  coord [
+     DEF VERT0 Coordinate { point [ 0 0 0 ] } 
+     DEF VERT1 Coordinate { point [ 1 0 0 ] } 
+     DEF VERT2 Coordinate { point [ 0 1 0 ] } 
+     DEF VERT3 Coordinate { point [ 1 1 0 ] } 
+  ]    
+     face [
+        DEF FACE0 Face {
+           surface DEF SURFACE1 NurbsPatchSurface {
+              ...
+           }
+           uvbox [...]
+           outerOrientation [TRUE]
+           outerWire [
+              DEF WIRE0 Wire {
+                 closed TRUE
+                 edge [  
+                    DEF EDGE0 Edge {
+                       curve  DEF CURVE0 NurbsCurve {
+                          controlPoint Coordinate { point [0 0 0, 0 0 0, 1 0 0, 1 0 0] }
+                          weight []
+                          knot [1 1]
+                          order 1
+                       }
+                       tRange [0,1]
+                       minCoord USE VERT0
+                       maxCoord USE VERT1
+                       pcurve [ 
+                          DEF PCURVE0 NurbsCurve2D {
+                             controlPoint [0 0, 0 0, 1 0, 1 0]
+                             weight []
+                             knot [1 1]
+                             order 1
+                          }
+                      ]
+                    }
+                    DEF EDGE1 Edge {
+                       curve DEF CURVE1 NurbsCurve {
+                          controlPoint Coordinate { point [1 0 0, 1 0 0, 1 1 0, 1 1 0] }
+                          weight []
+                          knot [1 1]
+                          order 1
+                       }
+                       tRange [0,1]
+                       minCoord USE VERT1
+                       maxCoord USE VERT2
+                       pcurve [ DEF PCURVE1 NurbsCurve2D { ... } ]
+                    }
+                   DEF EDGE2 Edge {
+                      curve DEF CURVE2 NurbsCurve {
+                         controlPoint Coordinate { point [1 1 0, 1 1 0, 0 1 0, 0 1 0] }
+                         weight []
+                         knot [1 1]
+                         order 1
+                      }
+                      tRange [0,1]
+                      minCoord USE VERT2
+                      maxCoord USE VERT3
+                      pcurve [ DEF PCURVE2 NurbsCurve2D { ... } ]
+                   }
+                   DEF EDGE3 Edge {
+                      curve DEF CURVE3 NurbsCurve {
+                         controlPoint Coordinate { point [0 1 0, 0 1 0, 0 0 0, 0 0 0] }
+                         weight []
+                         knot [1 1]
+                         order 1
+                      }
+                      tRange [0,1]
+                      minCoord USE VERT3
+                      maxCoord USE VERT0
+                      pcurve [ DEF PCURVE3 NurbsCurve2D { ... } ]
+                   }
+                 ]
+                 sense [TRUE,TRUE,TRUE,TRUE]
+              }
+           ]
+        }
+    ]
+ }
+}
+
+
+Shape {
+   geometry USE FACE0
+   appearance Appearance { material Material { } }
+}

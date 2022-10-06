@@ -1,0 +1,74 @@
+<X3D profile="CADInterchange" version="3.3">
+	<Scene>
+		<NavigationInfo type='"EXAMINE" "ANY" ' />
+		<Viewpoint position=" 0 0 15" />
+
+		<Shape containerField="shape">
+			<WireBREP>
+			  <Coordinate DEF="C1" point='0 0 0' containerField="vertex"/>
+			  <Coordinate DEF="C2" point='0 0 3' containerField="vertex"/>
+			  <Coordinate DEF="C3" point='0 3 0' containerField="vertex"/>
+			  <Coordinate DEF="C4" point='0 3 3' containerField="vertex"/>
+			  <Coordinate DEF="C5" point='3 0 0' containerField="vertex"/>
+			  <Coordinate DEF="C6" point='3 0 3' containerField="vertex"/>
+			  <Coordinate DEF="C7" point='3 3 0' containerField="vertex"/>
+			  <Coordinate DEF="C8" point='3 3 3' containerField="vertex"/>
+
+			  <Wire containerField="wire">
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='0 0 0 1, 1 -2 0 1, 2 0 0 1, 3 0 0 1' />
+				</Edge>
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='0 0 0 1, 0 1 0 1, 0 2 0 1, 0 3 0 1' />
+				</Edge>
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='0 0 0 1, 0 -2 1 1, 0 0 2 1, 0 0 3 1' />
+				</Edge>
+
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='3 0 0 1, 3 0 1 1, 3 0 2 1, 3 0 3 1' />
+				</Edge>
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='0 3 0 1, 1 3 0 1, 2 3 0 1, 3 3 0 1' />
+				</Edge>
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='0 0 3 1, 1 0 3 1, 2 0 3 1, 3 0 3 1' />
+				</Edge>
+
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='0 3 0 1, 0 3 1 1, 0 3 2 1, 0 3 3 1' />
+				</Edge>
+
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='3 3 0 1, 3 3 1 1, 3 3 2 1, 3 3 3 1' />
+				</Edge>
+
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='3 0 3 1, 3 1 3 1, 3 2 3 1, 3 3 3 1' />
+				</Edge>
+
+				<Edge containerField="edge">
+					<NurbsCurve containerField="curve" controlPoint='0 3 3 1, 1 3 3 1, 2 3 3 1, 3 3 3 1' />
+				</Edge>
+
+			  </Wire>
+			</WireBREP>
+		</Shape>	
+
+		<Shape containerField="shape">
+		  <PointBREP>
+		    <Coordinate USE="C1" containerField="vertex"/>
+		    <Coordinate USE="C2" containerField="vertex"/>
+		    <Coordinate USE="C3" containerField="vertex"/>
+		    <Coordinate USE="C4" containerField="vertex"/>
+		    <Coordinate USE="C5" containerField="vertex"/>
+		    <Coordinate USE="C6" containerField="vertex"/>
+		    <Coordinate USE="C7" containerField="vertex"/>
+		    <Coordinate USE="C8" containerField="vertex"/>
+		  </PointBREP>>
+		  <Appearance DEF="APP01">
+		    <Material diffuseColor="0.8451 0.5608 0.8824"/>
+		  </Appearance>
+		</Shape>		
+	</Scene>
+</X3D>

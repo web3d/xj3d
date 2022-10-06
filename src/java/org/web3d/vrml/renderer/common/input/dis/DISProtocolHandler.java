@@ -1,0 +1,793 @@
+/*****************************************************************************
+ *                        Web3d.org Copyright (c) 2004 - 2006
+ *                               Java Source
+ *
+ * This source is licensed under the GNU LGPL v2.1
+ * Please read http://www.gnu.org/copyleft/lgpl.html for more information
+ *
+ * This software comes with the standard NO WARRANTY disclaimer for any
+ * purpose. Use it at your own risk. If there's a problem you get to fix it.
+ *
+ ****************************************************************************/
+
+package org.web3d.vrml.renderer.common.input.dis;
+
+// External imports
+import java.nio.ByteBuffer;
+import java.util.*;
+import javax.vecmath.*;
+
+// Local imports
+import edu.nps.moves.dis.EntityStatePdu;
+import edu.nps.moves.dis.Pdu;
+
+import org.j3d.util.DefaultErrorReporter;
+import org.j3d.util.ErrorReporter;
+import org.web3d.util.PropertyTools;
+
+import org.web3d.vrml.nodes.*;
+
+import org.xj3d.core.eventmodel.NetworkProtocolHandler;
+
+/**
+ * The handler for DIS protocol network traffic.
+ * <p>
+ *
+ * @author Alan Hudson
+ * @version $Revision: 1.26 $
+ */
+public class DISProtocolHandler
+        implements NetworkProtocolHandler, NetworkRoleListener {
+
+    private static final String PROTOCOL = "DIS";
+
+    /** The amount of time between inactive checks */
+    private static final int INACTIVE_CHECK_TIME = 1_000;
+
+    /** The amount of time before we mark a ESPDU as inactive */
+    private static final int INACTIVE_TIME = 5_000;
+
+    /** The amount of time between heartbeats.   */
+    private static final int HEARTBEAT_CHECK_TIME = 4_500;
+
+    /**
+     * The default order.
+     */
+    private static final int DEFAULT_ORDER = 2;
+
+    /**
+     * The default convergence interval.
+     */
+    private static final int DEFAULT_CONVERGENCE_INTERVAL = 200;
+
+    /** Reporter instance for handing out errors */
+    private ErrorReporter errorReporter;
+
+    /** A map of open connections.  Only open one per address/port */
+    private Map<DISConnectionId, DISConnectionHandler> connections;
+
+    /** A map of DIS nodes wrappers and their unique ID's  */
+    private Map<DISId, NodeMapEntry> nodeMap;
+
+    /** A map of DIS nodes wrappers and their unique ID's  */
+    private Map<DISId, WriterMapEntry> writerMap;
+
+    /** Live list variables */
+    private LinkedList liveList;
+
+    /** Nodes which want to write to the network */
+    private LinkedList writerList;
+
+    /** The last time we checked for inactive pdus */
+    private long lastCheck;
+
+    /** The last time we checked for heartbeats */
+    private long lastHeartCheck;
+
+    /** The list of managers */
+    private List<VRMLDISNodeType> managerList;
+
+    /** The Entities we've placed on the addedEntities */
+    private Set<DISId> notifiedSet;
+
+    // Scratch vars to avoid gc.  Do not store DISId as a Map id, clone it
+    private DISId disId;
+
+    float[] tempPositionArray;
+
+    float[] tempPositionArray2;
+
+    float[] goalOrientation;
+
+    private Quat4f quaternion = null;
+
+    private float[] rotation;
+
+    private float[] currOrientation;
+
+    private float[] positionArray;
+
+    /** Whether we should smooth the DIS traffic */
+    private boolean smooth = true;
+
+    /** The default dead reckon position value */
+    protected static final boolean DEFAULT_DEADRECKON_POSITION = true;
+
+    /** Property describing the rescaling method to use */
+    protected static final String DEADRECKON_POSITION_PROP =
+            "org.web3d.vrml.renderer.common.dis.input.deadreckonPosition";
+
+    /** The value read from the system property for MIPMAPS */
+    protected static final boolean deadreckonPosition;
+
+    /** The default dead reckon position value */
+    protected static final boolean DEFAULT_DEADRECKON_ROTATION = true;
+
+    /** Property describing the dead reckon */
+    protected static final String DEADRECKON_ROTATION_PROP =
+            "org.web3d.vrml.renderer.common.dis.input.deadreckonRotation";
+
+    /** The value read from the system property for deadReckonRotation */
+    protected static final boolean deadreckonRotation;
+
+    // Scratch matrixes for smoothing
+    Matrix3d rotationMatrix;
+
+    Matrix3d psiMat;
+
+    Matrix3d thetaMat;
+
+    Matrix3d phiMat;
+
+    Quat4d rotationQuat;
+
+    Vector3d translationVec;
+
+    Vector3d[] translationDerivatives;
+
+    Vector3d[] rotationDerivatives;
+
+    RungeKuttaSolver solver;
+
+    AxisAngle4d axisTemp;
+
+    static {
+        deadreckonPosition = PropertyTools.fetchSystemProperty(DEADRECKON_POSITION_PROP,
+                DEFAULT_DEADRECKON_POSITION);
+
+        deadreckonRotation = PropertyTools.fetchSystemProperty(DEADRECKON_ROTATION_PROP,
+                DEFAULT_DEADRECKON_ROTATION);
+    }
+
+    /**
+     * Create a new instance of the execution space manager to run all the
+     * routing.
+     */
+    public DISProtocolHandler() {
+        errorReporter = DefaultErrorReporter.getDefaultReporter();
+
+        connections = new HashMap<>();
+        nodeMap = Collections.synchronizedMap(new HashMap<DISId, NodeMapEntry>());
+        writerMap = Collections.synchronizedMap(new HashMap<DISId, WriterMapEntry>());
+
+        liveList = new LinkedList();
+        writerList = new LinkedList();
+        managerList = Collections.synchronizedList(new ArrayList<VRMLDISNodeType>());
+        notifiedSet = Collections.synchronizedSet(new java.util.HashSet<DISId>());
+        disId = new DISId(0, 0, 0);
+        tempPositionArray = new float[3];
+        tempPositionArray2 = new float[3];
+        goalOrientation = new float[3];
+
+        rotation = new float[4];
+        quaternion  = new Quat4f();
+        positionArray = new float[3];
+        currOrientation = new float[3];
+
+        rotationMatrix = new Matrix3d();
+        psiMat = new Matrix3d();
+        thetaMat = new Matrix3d();
+        phiMat = new Matrix3d();
+        rotationQuat = new Quat4d();
+        translationVec = new Vector3d();
+        translationDerivatives = new Vector3d[]{
+                    new Vector3d(),
+                    new Vector3d()
+                };
+
+        rotationDerivatives = new Vector3d[]{
+                    new Vector3d()
+                };
+
+        axisTemp = new AxisAngle4d();
+    }
+
+    //----------------------------------------------------------
+    // Methods required by NetworkProtocolHandler
+    //----------------------------------------------------------
+    /**
+     * Get the protocol this handler supports.
+     * @return protocol
+     */
+    @Override
+    public String getProtocol() {
+        return PROTOCOL;
+    }
+
+    /**
+     * Register an error reporter with the manager so that any errors generated
+     * by the loading of script code can be reported in a nice, pretty fashion.
+     * Setting a value of null will clear the currently set reporter. If one
+     * is already set, the new value replaces the old.
+     *
+     * @param reporter The instance to use or null
+     */
+    @Override
+    public void setErrorReporter(ErrorReporter reporter) {
+        errorReporter = reporter;
+    }
+
+    static int numProcessed = 0;
+
+    /**
+     * Process network traffic now.
+     */
+    @Override
+    public void processNetworkTraffic() {
+        long currTime = System.currentTimeMillis();
+        boolean checkInactive = (currTime - lastCheck >= INACTIVE_CHECK_TIME);
+
+        LiveListEntry node = (LiveListEntry) liveList.head;
+        LiveListEntry last = (LiveListEntry) liveList.head;
+        VRMLDISNodeType di;
+        float dt;
+        EntityStatePdu espdu;
+
+        while (node != null) {
+            di = node.node;
+
+            if (node.newPackets) {
+                if (node.currFire != null) {
+                    di.packetArrived(node.currFire);
+                    node.currFire = null;
+                } else if (node.currDetonate != null) {
+                    di.packetArrived(node.currDetonate);
+
+                    // Stop dead reckon on detonate. If still alive it will send more updates.
+                    node.closeEnough = true;
+                    node.currDetonate = null;
+                } else if (node.currEspdu != null) {
+                    di.packetArrived(node.currEspdu);
+//                    System.out.println("ESPDU: " + numProcessed + " processed");
+                    espdu = node.currEspdu;
+
+//System.out.println("***Real Pos: " + espdu.getEntityLocationX() + " " + espdu.getEntityLocationY() + " " + espdu.getEntityLocationZ());
+
+                    rotationMatrix.setIdentity();
+
+                    eulersToMatrix(
+                            espdu.getEntityOrientation().getPhi(),
+                            espdu.getEntityOrientation().getTheta(),
+                            espdu.getEntityOrientation().getPsi(),
+                            rotationMatrix);
+
+                    rotationQuat.set(rotationMatrix);
+
+                    // Convert to normal coordinates
+                    Vector3d translation = new Vector3d(
+                            espdu.getEntityLocation().getX(),
+                            -espdu.getEntityLocation().getZ(),
+                            espdu.getEntityLocation().getY());
+
+                    translationDerivatives[0].set(
+                            espdu.getEntityLinearVelocity().getX(),
+                            -espdu.getEntityLinearVelocity().getZ(),
+                            espdu.getEntityLinearVelocity().getY());
+
+                    rotationDerivatives[0].set(
+                            espdu.getDeadReckoningParameters().getEntityAngularVelocity().getX(),
+                            -espdu.getDeadReckoningParameters().getEntityAngularVelocity().getZ(),
+                            espdu.getDeadReckoningParameters().getEntityAngularVelocity().getY());
+
+                    translationDerivatives[1].set(
+                            espdu.getDeadReckoningParameters().getEntityLinearAcceleration().getX(),
+                            -espdu.getDeadReckoningParameters().getEntityLinearAcceleration().getZ(),
+                            espdu.getDeadReckoningParameters().getEntityLinearAcceleration().getY());
+
+                    node.translationConverger.convergeTo(
+                            translation,
+                            translationDerivatives,
+                            currTime,
+                            currTime);
+
+                    node.rotationConverger.convergeTo(
+                            rotationQuat,
+                            rotationDerivatives,
+                            currTime,
+                            currTime);
+                }
+
+                node.newPackets = false;
+                numProcessed++;
+            // TODO:  Handle notification of other packet types
+            }
+
+            if (checkInactive && (currTime - node.lastTime >= INACTIVE_TIME)) {
+                node.node.setIsActive(false);
+
+                liveList.remove(node, last);
+
+                int siteID = di.getSiteID();
+                int appID = di.getAppID();
+                int entityID = di.getEntityID();
+
+                disId.setValue(siteID, appID, entityID);
+
+                NodeMapEntry entry = nodeMap.get(disId);
+
+                if (entry == null) {
+                    System.out.println("DIS Entry null on timeout");
+                } else {
+                    entry.listEntry = null;
+                    // TODO: I'm not sure we want to remove entries from the nodeMap
+                    // Removing from the map means restored entities with this ID do not update
+//                    nodeMap.remove(disId);
+
+                    int len = managerList.size();
+
+                    VRMLDISManagerNodeType manager;
+
+                    for (int i = 0; i < len; i++) {
+                        manager = (VRMLDISManagerNodeType) managerList.get(i);
+
+                        manager.entityRemoved(di);
+                        notifiedSet.remove(disId);
+                    }
+                }
+            }
+
+            if ((deadreckonPosition || deadreckonRotation) && !node.closeEnough) {
+                // Handle dead reckoning
+                dt = (currTime - node.lastTime) * 0.001f;
+//                dt = (currTime - node.lastTime) * 0.01f;
+
+
+                if (Math.abs(node.currEspdu.getEntityLinearVelocity().getX()) <= 0.0001 &&
+                        Math.abs(node.currEspdu.getEntityLinearVelocity().getY()) <= 0.0001 &&
+                        Math.abs(node.currEspdu.getEntityLinearVelocity().getZ()) <= 0.0001 &&
+                        Math.abs(node.currEspdu.getDeadReckoningParameters().getEntityLinearAcceleration().getX()) <= 0.0001 &&
+                        Math.abs(node.currEspdu.getDeadReckoningParameters().getEntityLinearAcceleration().getY()) <= 0.0001 &&
+                        Math.abs(node.currEspdu.getDeadReckoningParameters().getEntityLinearAcceleration().getZ()) <= 0.0001) {
+
+                    node.closeEnough = true;
+                }
+
+                int idx;
+
+                if (deadreckonPosition) {
+                    node.translationConverger.getValue(currTime, translationVec);
+                    tempPositionArray[0] = (float) translationVec.x;
+                    tempPositionArray[1] = (float) translationVec.y;
+                    tempPositionArray[2] = (float) translationVec.z;
+                    idx = di.getFieldIndex("translation");
+                    di.setValue(idx, tempPositionArray, 3);
+                }
+
+                if (deadreckonRotation) {
+                    node.rotationConverger.getValue(currTime, rotationQuat);
+                    rotationQuat.normalize();
+
+                    axisTemp.set(rotationQuat);
+                    rotation[0] = (float) axisTemp.x;
+                    rotation[1] = (float) axisTemp.y;
+                    rotation[2] = (float) axisTemp.z;
+                    rotation[3] = (float) axisTemp.angle;
+
+                    idx = di.getFieldIndex("rotation");
+                    di.setValue(idx, rotation, 4);
+                }
+
+                /*
+                DRPosition(node.currEspdu, dt, tempPositionArray);
+
+                idx = di.getFieldIndex("translation");
+                di.setValue(idx, tempPositionArray, 3);
+
+
+                DROrientation(node.currEspdu, dt, dRorientation);
+                axisTemp.set(dRorientation);
+                rotation[0] = (float) axisTemp.x;
+                rotation[1] = (float) axisTemp.y;
+                rotation[2] = (float) axisTemp.z;
+                rotation[3] = (float) axisTemp.angle;
+
+                idx = di.getFieldIndex("rotation");
+                di.setValue(idx, rotation, 4);
+                 */
+                node.prevDt = dt;
+            }
+
+            last = node;
+            node = (LiveListEntry) node.next;
+        }
+
+        if (checkInactive) {
+            lastCheck = currTime;
+        }
+
+        WriterListEntry writer = (WriterListEntry) writerList.head;
+        WriterListEntry last_writer = (WriterListEntry) writerList.head;
+
+        while (writer != null) {
+            di = writer.node;
+
+            if (di.valuesToWrite()) {
+                writer.lastTime = currTime;
+                Pdu pdu = di.getState();
+
+                disId.setValue(di.getSiteID(), di.getAppID(), di.getEntityID());
+                WriterMapEntry entry = writerMap.get(disId);
+                entry.writer.write(ByteBuffer.wrap(pdu.marshalWithNpsTimestamp()));
+
+            } else {
+                if (currTime - writer.lastTime >= HEARTBEAT_CHECK_TIME) {
+                    // Definately write a value
+                    writer.lastTime = currTime;
+                    Pdu pdu = di.getState();
+
+                    disId.setValue(di.getSiteID(), di.getAppID(), di.getEntityID());
+                    WriterMapEntry entry = writerMap.get(disId);
+                    entry.writer.write(ByteBuffer.wrap(pdu.marshalWithNpsTimestamp()));
+                } else {
+                    // TODO: Check Dead Reckon error
+                }
+            }
+
+            last_writer = writer;
+            writer = (WriterListEntry) writer.next;
+        }
+    }
+
+    /**
+     * Add a network node to the management system.
+     *
+     * @param node The instance to add to this manager
+     */
+    @Override
+    public void addNode(VRMLNetworkInterfaceNodeType node) {
+        int port;
+        String address;
+        VRMLDISNodeType di = (VRMLDISNodeType) node;
+        DISConnectionId id;
+        DISConnectionHandler conn;
+        int siteID;
+        int appID;
+        int entityID;
+        DISId did;
+        long timestamp;
+        WriterListEntry newwle;
+        WriterMapEntry entry;
+
+        di.addNetworkRoleListener(this);
+
+        switch (di.getRole()) {
+            case VRMLNetworkInterfaceNodeType.ROLE_MANAGER:
+                address = di.getAddress();
+                port = di.getPort();
+
+                id = new DISConnectionId(address, port);
+                conn = connections.get(id);
+
+                if (conn == null) {
+                    conn = new DISConnectionHandler(nodeMap, liveList, managerList, notifiedSet, address, port);
+
+                    connections.put(id, conn);
+                }
+
+                managerList.add(di);
+                break;
+            case VRMLNetworkInterfaceNodeType.ROLE_READER:
+                address = di.getAddress();
+                port = di.getPort();
+
+                id = new DISConnectionId(address, port);
+                conn = connections.get(id);
+
+                if (conn == null) {
+                    // TODO: When do we get rid of these?
+                    conn = new DISConnectionHandler(nodeMap, liveList, managerList, notifiedSet, address, port);
+
+                    connections.put(id, conn);
+                }
+
+                siteID = di.getSiteID();
+                appID = di.getAppID();
+                entityID = di.getEntityID();
+                int idx = node.getFieldIndex("marking");
+                VRMLFieldData field = node.getFieldValue(idx);
+                System.out.println("New DIS node: siteID: " + siteID + " appID: " + appID + " " + " entityID: " + entityID + " marking: " + field.stringValue);
+
+                did = new DISId(siteID, appID, entityID);
+
+                nodeMap.put(did, new NodeMapEntry((VRMLDISNodeType) node, null));
+
+                // Add all nodes to writer map in case they change status
+                newwle = new WriterListEntry(di);
+
+                entry = new WriterMapEntry((VRMLDISNodeType) node, newwle, conn.getWriter());
+                writerMap.put(did, entry);
+
+                break;
+            case VRMLNetworkInterfaceNodeType.ROLE_WRITER:
+
+                address = di.getAddress();
+                port = di.getPort();
+
+                id = new DISConnectionId(address, port);
+                conn = connections.get(id);
+
+                if (conn == null) {
+                    // TODO: When do we get rid of these?
+                    conn = new DISConnectionHandler(nodeMap, liveList, managerList, notifiedSet, address, port);
+
+                    connections.put(id, conn);
+                }
+
+                siteID = di.getSiteID();
+                appID = di.getAppID();
+                entityID = di.getEntityID();
+                //System.out.println("New DIS node: " + siteID + " " + appID + " " + entityID);
+                did = new DISId(siteID, appID, entityID);
+
+                // Add all nodes to writer map in case they change status
+                newwle = new WriterListEntry(di);
+
+                entry = new WriterMapEntry((VRMLDISNodeType) node, newwle, conn.getWriter());
+                writerMap.put(did, entry);
+
+                writerList.add(newwle);
+                break;
+            case VRMLNetworkInterfaceNodeType.ROLE_INACTIVE:
+                System.out.println("Logic to change Inactive to Writer not implemented");
+                break;
+        }
+    }
+
+    /**
+     * Remove a network node from the management system.
+     *
+     * @param node The instance to add to this manager
+     */
+    @Override
+    public void removeNode(VRMLNetworkInterfaceNodeType node) {
+        System.out.println("DISProtocolHandler: removeNode not implemented");
+    }
+
+    /**
+     * Force clearing all currently managed nodes from this manager now. This
+     * is used to indicate that a new world is about to be loaded and
+     * everything should be cleaned out now.
+     */
+    @Override
+    public void clear() {
+        if (connections.size() > 0) {
+            System.out.println("DISProtocolHandler: clear not implemented");
+        }
+    }
+
+    /**
+     * Shutdown the protocol handler now. If this is using any external resources
+     * it should remove those now as the entire application is about to die
+     */
+    @Override
+    public void shutdown() {
+        if (connections.size() > 0) {
+            System.out.println("DISProtocolHandler: shutdown not implemented");
+        }
+    }
+
+    //----------------------------------------------------------
+    // Methods required for NetworkRoleListener
+    //----------------------------------------------------------
+    /**
+     * The role of this node has changed.
+     *
+     * @param newRole The new role, reader, writer, inactive.
+     * @param node The node which changed roles.
+     */
+    @Override
+    public void roleChanged(int newRole, Object node) {
+        VRMLDISNodeType dis_node = (VRMLDISNodeType) node;
+
+        int siteID;
+        int entityID;
+        int appID;
+        long timestamp = System.currentTimeMillis();
+
+        switch (newRole) {
+            case VRMLNetworkInterfaceNodeType.ROLE_INACTIVE:
+                break;
+            case VRMLNetworkInterfaceNodeType.ROLE_READER:
+                // remove from writer list
+                WriterListEntry wlist_node = (WriterListEntry) writerList.head;
+                WriterListEntry wlast = (WriterListEntry) writerList.head;
+
+                while (wlist_node != null) {
+                    if (wlist_node.node == dis_node) {
+                        writerList.remove(wlist_node, wlast);
+                        break;
+                    }
+
+                    wlast = wlist_node;
+                    wlist_node = (WriterListEntry) wlist_node.next;
+                }
+
+                // add to livelist
+                NodeMapEntry entry = new NodeMapEntry(dis_node, null);
+
+                nodeMap.put(((DISId) disId.clone()), entry);
+
+                LiveListEntry newlle = new LiveListEntry(dis_node, timestamp);
+                entry.listEntry = newlle;
+
+                EntityStatePdu espdu = (EntityStatePdu) dis_node.getState();
+
+                newlle.lastEspdu = espdu;
+                newlle.currEspdu = espdu;
+                newlle.rotationConverger = new OrderNQuat4dConverger(DEFAULT_ORDER, DEFAULT_CONVERGENCE_INTERVAL, null);
+                newlle.translationConverger = new OrderNVector3dConverger(DEFAULT_ORDER, DEFAULT_CONVERGENCE_INTERVAL, null);
+                newlle.espduTimestamp = espdu.getTimestamp();
+                newlle.closeEnough = false;
+                newlle.avgTime = 0.01f;
+                newlle.newPackets = true;
+
+                liveList.add(newlle);
+                break;
+            case VRMLNetworkInterfaceNodeType.ROLE_WRITER:
+                // remove from liveList
+
+                LiveListEntry list_node = (LiveListEntry) liveList.head;
+                LiveListEntry last = (LiveListEntry) liveList.head;
+
+                while (list_node != null) {
+                    if (list_node.node == dis_node) {
+                        liveList.remove(list_node, last);
+                        break;
+                    }
+
+                    last = list_node;
+                    list_node = (LiveListEntry) list_node.next;
+                }
+
+                // add to writer list
+                WriterListEntry newwle = new WriterListEntry(dis_node);
+                writerList.add(newwle);
+                break;
+        }
+    }
+
+    //----------------------------------------------------------
+    // Local convenience methods
+    //----------------------------------------------------------
+    /**
+     * Calculate the dead reckoning position of a EntityStatePDU
+     * @param espdu
+     * @param dt
+     * @param dRPosition
+     */
+    private void DRPosition(EntityStatePdu espdu, float dt, float[] dRPosition) {
+        float dtSq = dt * dt;
+
+        dRPosition[0] = (float) (espdu.getEntityLocation().getX() +
+                dt * espdu.getEntityLinearVelocity().getX() +
+                dtSq * espdu.getDeadReckoningParameters().getEntityLinearAcceleration().getX());
+
+        dRPosition[1] = (float) (-espdu.getEntityLocation().getZ() -
+                dt * espdu.getEntityLinearVelocity().getZ() -
+                dtSq * espdu.getDeadReckoningParameters().getEntityLinearAcceleration().getZ());
+
+        dRPosition[2] = (float) (espdu.getEntityLocation().getY() +
+                dt * espdu.getEntityLinearVelocity().getY() +
+                dtSq * espdu.getDeadReckoningParameters().getEntityLinearAcceleration().getY());
+//System.out.println("DRPOS:");
+//System.out.println("   Current Pos: " + espdu.getEntityLocationX() + " " + espdu.getEntityLocationY() + " " + espdu.getEntityLocationZ());
+//System.out.println("   Velocity: " + espdu.getEntityLinearVelocityX() + " " + espdu.getEntityLinearVelocityY() + " " + espdu.getEntityLinearVelocityZ());
+//System.out.println("   Calc Pos: " + dRPosition[0] + " " + dRPosition[1] + " " + dRPosition[2]);
+    }
+
+    /*
+     * Calculate the deadreckon orientation of a EntityStatePDU
+     */
+    private void DROrientation(EntityStatePdu espdu, float dt, float[] dROrientation) {
+        float yaw, pitch, roll;
+
+        roll = espdu.getEntityOrientation().getPhi() + dt * espdu.getDeadReckoningParameters().getEntityAngularVelocity().getX();
+        pitch = espdu.getEntityOrientation().getTheta() + dt * espdu.getDeadReckoningParameters().getEntityAngularVelocity().getY();
+        yaw = espdu.getEntityOrientation().getPsi() + dt * espdu.getDeadReckoningParameters().getEntityAngularVelocity().getZ();
+
+        // note Kent's quaternion code has irregular ordering of Euler angles
+        // which (by whatever method :) accomplishes the angle transformation
+        // desired...   (results verified using NPS AUV)
+
+        dROrientation[0] = -yaw;
+        dROrientation[1] = roll;
+        dROrientation[2] = pitch;
+    }
+
+    private void smooth3Floats(float[] drCurrent, float[] drPrevUpdate, float[] result,
+            float currentTime, float averageUpdateTime) {
+        /*
+        // the ratio of how long since the most recent update time to the averageUpdateTime
+        float factor = currentTime / averageUpdateTime;
+
+        result[0] = drPrevUpdate[0] + ( drCurrent[0] - drPrevUpdate[0] ) * factor;
+        result[1] = drPrevUpdate[1] + ( drCurrent[1] - drPrevUpdate[1] ) * factor;
+        result[2] = drPrevUpdate[2] + ( drCurrent[2] - drPrevUpdate[2] ) * factor;
+         */
+
+        result[0] = (drPrevUpdate[0] + drCurrent[0]) / 2.0f;
+        result[1] = (drPrevUpdate[1] + drCurrent[1]) / 2.0f;
+        result[2] = (drPrevUpdate[2] + drCurrent[2]) / 2.f;
+
+    }
+
+    private float normalize2(float input_angle) {
+        float angle = input_angle;
+        float twoPI = (float) Math.PI * 2.0f;
+
+        while (angle > Math.PI) {
+            angle -= twoPI;
+        }
+        while (angle <= -Math.PI) {
+            angle += twoPI;
+        }
+        return angle;
+    }
+
+    // returns: the magnitude and direction of the angle change.
+    private void fixEulers(float[] goalOrientation, float[] currOrientation) {
+        for (int idx = 0; idx < goalOrientation.length; idx++) {
+            goalOrientation[idx] = currOrientation[idx] +
+                    normalize2(normalize2(goalOrientation[idx]) - normalize2(currOrientation[idx]));
+        }
+    }
+
+    /**
+     * Sum of the squares of the diffs between two float arrays.
+     * @param first
+     * @param second
+     * @return square of delta value between floats
+     */
+    private float SqrDeltaFloats(float[] first, float[] second) {
+        float sumOfSqrs = 0.0f;
+
+        for (int idx = 0; idx < first.length; idx++) {
+            sumOfSqrs += (first[idx] - second[idx]) * (first[idx] - second[idx]);
+        }
+
+        return sumOfSqrs;
+    }
+
+    /**
+     * Converts a set of Euler angles (phi, theta, psi)
+     * to a rotation matrix.
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @param rotMatrix a rotation matrix to hold the result
+     */
+    private void eulersToMatrix(double x, double y, double z, Matrix3d rotMatrix) {
+        psiMat.setIdentity();
+        psiMat.rotY(-z);
+
+        thetaMat.rotZ(y);
+
+        phiMat.rotX(x);
+
+        rotMatrix.mul(phiMat, thetaMat);
+
+        rotMatrix.mul(psiMat);
+    }
+
+} // end class file DISProtocolHandler.java

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>LSArchitecturePriority</key>
+        <array>
+            <string>x86_64</string>
+        </array>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.graphics-design</string>
+	<key>LSHasLocalizedDisplayName</key>
+	<true/>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.7.0</string>
+        <key>CFBundleName</key>
+        <string>Xj3DBrowser</string>
+        <key>CFBundleVersion</key>
+        <string>2.1</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Copyright © 1995-2014. All rights reserved.</string>
+        <key>CFBundleShortVersionString</key>
+        <string>Developed at the Naval Postgraduate School, Monterey, CA</string>
+        <key>CFBundleIdentifier</key>
+        <string>org.xj3d</string>
+        <key>CFBundleAllowMixedLocalizations</key>
+        <string>true</string>
+        <key>CFBundleExecutable</key>
+        <string>JavaApplicationStub</string>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>English</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleSignature</key>
+        <string>????</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 1995-2014. All rights reserved.</string>
+        <key>CFBundleIconFile</key>
+        <string>xj3dIcons.icns</string>
+        <key>Java</key>
+        <dict>
+            <key>JVMVersion</key>
+            <string>1.7+</string>
+            <key>MainClass</key>
+            <string>xj3d.browser.Xj3DBrowser</string>
+            <key>Properties</key>
+                <dict>
+                    <key>apple.laf.useScreenMenuBar</key>
+                    <string>true</string>
+                    <key>apple.awt.graphics.UseQuartz</key>
+                    <string>true</string>
+                </dict>
+                <key>VMOptions</key>
+                <!-- The JavaApplicationStub takes care of the JVM arg -Djava.library.path=./Xj3DBrowser.app/Contents/Resources/bin internally -->
+                <string>-Dsun.java2d.opengl=true -Dorg.web3d.vrml.renderer.common.nodes.shape.useTextureCache=true -Dswing.aatext=true -Dawt.useSystemAAFontSettings=gasp -Djava.ext.dirs= -Xmx1g -XX:-UseConcMarkSweepGC -XX:-UseParallelGC -Djava.net.preferIPv4Stack=true</string>
+                <key>Arguments</key>
+                <!-- The moving_box.x3dv arg is taken care of internally in the JavaApplicationStub -->
+                <string>-anisotropicDegree 2 -enableOriginManager -numLoaderThreads 4 -newt</string>
+            <!-- The JavaApplicationStub takes care of the ClassPath internally -->
+            <!--key>ClassPath</key>
+                <array>
+                    <string>$JAVAROOT/jhall.jar</string>
+                    <string>$JAVAROOT/joal.jar</string>
+                    <string>$JAVAROOT/joal-natives-macosx-universal.jar</string>
+                    <string>$JAVAROOT/gluegen-rt.jar</string>
+                    <string>$JAVAROOT/gluegen-rt-natives-macosx-universal.jar</string>
+                    <string>$JAVAROOT/jogl-all-natives-macosx-universal.jar</string>
+                    <string>$JAVAROOT/jogl-all.jar</string>
+                    <string>$JAVAROOT/xj3d-2.1-3rdparty-nps.jar</string>
+                    <string>$JAVAROOT/xj3d-2.1-nps.jar</string>
+                    <string>$JAVAROOT/xj3d.browser_2.1.0-nps.jar</string>
+                    <string>$JAVAROOT/xj3d.cadfilter_2.1.0-nps.jar</string>
+                    <string>$JAVAROOT/jhall.jar</string>
+                </array-->
+        </dict>
+    </dict>
+</plist>

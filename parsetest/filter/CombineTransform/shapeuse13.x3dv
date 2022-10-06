@@ -1,0 +1,34 @@
+#X3D V3.3 utf8
+
+PROFILE Immersive
+COMPONENT EXT_Grouping:1
+
+DEF SHAPE0 Shape {
+    geometry IndexedFaceSet {
+      coord Coordinate {
+	point [1 0 -1, -1 0 -1, 0 1 -1]
+      }
+      coordIndex [ 0 2 1 ]
+    }
+}
+
+Transform {
+   translation 0 2 0
+   children [
+	Transform {
+	   translation 1 2 3
+	   children [
+	      Shape {
+		    geometry IndexedFaceSet {
+		      coord Coordinate {
+			point [1 -1 -1, -1 -1 -1, 0 0 -1]
+		      }
+		      coordIndex [ 0 2 1 ]
+		    }
+	      }
+	      USE SHAPE0
+	   ]
+	}
+   ]
+}
+

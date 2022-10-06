@@ -1,0 +1,11 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+DEF SHAPE Shape {
+   appearance DEF APP Appearance {
+      material DEF MAT Material { diffuseColor 1 0 0 }
+   }
+   geometry DEF BOX Box {}
+}
+   

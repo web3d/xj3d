@@ -1,0 +1,12 @@
+#VRML V2.0 utf8
+
+Anchor {
+  url [ "inlined_boxes.wrl" ]
+  description "Find the inlined boxes"
+  children Shape {
+    geometry Box {}
+	appearance Appearance {
+	  material Material { diffuseColor 0.3 1 1 }
+	}
+  }
+}

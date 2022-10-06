@@ -1,0 +1,8 @@
+access.properties is maintained by local users only.
+
+access.properties is blocked from uploading into subversion
+(by setting the svn:ignore property on the parent directory).
+
+Users can create their own private access.properties file if needed.
+Copy the access.properties.template as new file access.properties
+and then edit the CHANGEME values to get the correct format.

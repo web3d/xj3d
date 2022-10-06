@@ -1,0 +1,11 @@
+<componentConfig>
+ <component name="xj3d_Layering" title="Xj3D Layering Extension component proposal" levels="1" url="http://www.xj3d.org/">
+    <nodeLocation type="null" package="org.web3d.vrml.renderer.norender.nodes.layering"/>
+    <nodeLocation type="ogl" package="org.web3d.vrml.renderer.ogl.nodes.layering"/>
+    <componentLevel level="1">
+      <node name="CustomViewport"/>
+      <node name="FixedViewport"/>
+      <node name="ProportionalViewport"/>
+    </componentLevel>
+  </component>
+</componentConfig>

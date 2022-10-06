@@ -1,0 +1,18 @@
+#X3D V3.0 utf8
+
+PROFILE Interchange
+
+Shape {
+   appearance Appearance {
+      texture ImageTexture {
+            url ["vts.jpg"]
+      }
+      material Material { 
+         ambientIntensity 0
+         diffuseColor 0.55 0.55 0.55
+         specularColor 0.7 0.7 0.7
+         shininess 0.25
+      }
+   }
+   geometry Box {}
+}

@@ -1,0 +1,6 @@
+Apache Ant is required to be installed before running this version of Xj3D.
+
+We assume that you already have at least Apache Ant version 1.7.0, or later, and
+that you have an environment variable for ANT_HOME set and added to your PATH.
+
+The latest version of Apache Ant can be obtained from: http://ant.apache.org/bindownload.cgi

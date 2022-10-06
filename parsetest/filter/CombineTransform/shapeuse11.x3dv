@@ -1,0 +1,28 @@
+#X3D V3.3 utf8
+
+PROFILE Immersive
+COMPONENT EXT_Grouping:1
+
+Transform {
+   #rotation 1 0 0 1.5
+   translation 0 0.75 0
+   children [
+Transform {
+   scale 1 2 1
+   children [
+Collision {
+   enabled FALSE
+   children [
+Shape {      # Should get no transform
+   geometry IndexedFaceSet {
+      coord Coordinate {
+         point [1 0 -1, -1 0 -1, 0 1 -1]
+      }
+      coordIndex [ 0 2 1 ]
+   }
+}
+
+]}
+
+]}
+]}

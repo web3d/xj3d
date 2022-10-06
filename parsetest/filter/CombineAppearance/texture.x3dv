@@ -1,0 +1,49 @@
+#X3D V3.0 utf8
+
+PROFILE Interchange
+
+Shape {
+   appearance Appearance {
+      material DEF MAT0 Material {
+         diffuseColor 1 0 0
+      }
+      texture ImageTexture {
+         url ["vts.jpg"]
+      }
+   }
+   geometry Box {}
+}
+
+
+Transform {
+   translation 2 0 0
+   children [
+	Shape {
+	   appearance Appearance {
+	      material USE MAT0
+	      texture ImageTexture {
+		 url ["vts.jpg"]
+	      }
+	   }
+	   geometry Box {}
+	}
+   ]
+}
+
+Transform {
+   translation -2 0 0
+   children [
+	Shape {
+	   appearance Appearance {
+	      material Material {
+		 diffuseColor 0 0 1
+		 transparency 0.5
+	      }
+	      texture ImageTexture {
+		 url ["vts.jpg"]
+	      }
+	   }
+	   geometry Box {}
+	}
+   ]
+}

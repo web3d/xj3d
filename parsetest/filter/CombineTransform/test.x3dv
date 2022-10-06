@@ -1,0 +1,32 @@
+#X3D V3.3 utf8
+
+PROFILE Immersive
+
+COMPONENT EXT_Grouping:1
+COMPONENT EXT_Grouping:1
+
+DEF SHAPE0 Shape {
+   geometry IndexedFaceSet {
+         coordIndex [0 2 1]
+      coord Coordinate {
+            point [1.0 0.0 -1.0, -1.0 0.0 -1.0, 0.0 1.0 -1.0]
+      }
+
+   }
+
+}
+Shape {
+   geometry IndexedFaceSet {
+         coordIndex [0 2 1]
+      coord Coordinate {
+            point [2.0 3.0 2.0, 0.0 3.0 2.0, 1.0 4.0 2.0]
+      }
+
+   }
+
+}
+MatrixTransform {
+      matrix 1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 0.0 1.0 4.0 3.0 1.0
+   children [USE SHAPE0
+   ]
+}

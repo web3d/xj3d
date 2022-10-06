@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <name>Xj3D - NPS Sourceforge</name>
+        </general-data>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>Xj3D - NPS Sourceforge</name>
+            <properties>
+                <property-file>build.properties</property-file>
+            </properties>
+            <folders>
+                <source-folder>
+                    <label>${application.title}</label>
+                    <location>.</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>Source Packages</label>
+                    <type>java</type>
+                    <location>src/java</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>Browser App Source Packages</label>
+                    <type>java</type>
+                    <location>apps/browser/src/java</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>Test Packages</label>
+                    <type>java</type>
+                    <location>test</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>CadFilter App Source Packages</label>
+                    <type>java</type>
+                    <location>apps/cadfilter/src/java</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>Replica App Source Packages</label>
+                    <type>java</type>
+                    <location>apps/replica/src/java</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>Browser Examples</label>
+                    <type>java</type>
+                    <location>examples/browser</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>examples/sai/simserver</label>
+                    <type>java</type>
+                    <location>examples/sai/simserver</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>EAI Examples</label>
+                    <type>java</type>
+                    <location>parsetest/eai</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>parsetest/sai/external</label>
+                    <type>java</type>
+                    <location>parsetest/sai/external</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>parsetest/scripts</label>
+                    <type>java</type>
+                    <location>parsetest/scripts</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>DIS Examples</label>
+                    <type>java</type>
+                    <location>parsetest/xj3d_extensions/dis</location>
+                    <encoding>ISO-8859-1</encoding>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="build">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>build</target>
+                </action>
+                <action name="clean">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>clean</target>
+                </action>
+                <action name="javadoc">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>javadoc</target>
+                </action>
+                <action name="run">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>run</target>
+                </action>
+                <action name="rebuild">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>clean</target>
+                    <target>build</target>
+                </action>
+                <action name="debug">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>debug</target>
+                </action>
+                <action name="compile.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>compile-selected-files-in-test</target>
+                    <context>
+                        <property>files</property>
+                        <folder>test</folder>
+                        <pattern>\.java$</pattern>
+                        <format>relative-path</format>
+                        <arity>
+                            <separated-files>,</separated-files>
+                        </arity>
+                    </context>
+                </action>
+                <action name="run.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>run-selected-file-in-test</target>
+                    <context>
+                        <property>run.class</property>
+                        <folder>test</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="compile.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>compile-selected-files-in-java</target>
+                    <context>
+                        <property>files</property>
+                        <folder>src/java</folder>
+                        <pattern>\.java$</pattern>
+                        <format>relative-path</format>
+                        <arity>
+                            <separated-files>,</separated-files>
+                        </arity>
+                    </context>
+                </action>
+                <action name="debug.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>debug-selected-file-in-test</target>
+                    <context>
+                        <property>debug.class</property>
+                        <folder>test</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="compile.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>compile-selected-files-in-scripts</target>
+                    <context>
+                        <property>files</property>
+                        <folder>parsetest/scripts</folder>
+                        <pattern>\.java$</pattern>
+                        <format>relative-path</format>
+                        <arity>
+                            <separated-files>,</separated-files>
+                        </arity>
+                    </context>
+                </action>
+                <action name="run.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>run-selected-file-in-browser</target>
+                    <context>
+                        <property>run.class</property>
+                        <folder>examples/browser</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="compile.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>compile-selected-files-in-browser</target>
+                    <context>
+                        <property>files</property>
+                        <folder>examples/browser</folder>
+                        <pattern>\.java$</pattern>
+                        <format>relative-path</format>
+                        <arity>
+                            <separated-files>,</separated-files>
+                        </arity>
+                    </context>
+                </action>
+                <action name="debug.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>debug-selected-file-in-browser</target>
+                    <context>
+                        <property>debug.class</property>
+                        <folder>examples/browser</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="debug.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>debug-selected-file-in-replica</target>
+                    <context>
+                        <property>debug.class</property>
+                        <folder>apps/replica/src/java</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="test">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>test</target>
+                </action>
+                <action name="debug.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>debug-selected-file-in-eai</target>
+                    <context>
+                        <property>debug.class</property>
+                        <folder>parsetest/eai</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="debug.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>debug-selected-file-in-cadfilter</target>
+                    <context>
+                        <property>debug.class</property>
+                        <folder>apps/cadfilter/src/java</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="run.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>run-selected-file-in-eai</target>
+                    <context>
+                        <property>run.class</property>
+                        <folder>parsetest/eai</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="profile">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>profile-nb</target>
+                </action>
+                <action name="run.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>run-selected-file-in-external</target>
+                    <context>
+                        <property>run.class</property>
+                        <folder>parsetest/sai/external</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="debug.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>debug-selected-file-in-external</target>
+                    <context>
+                        <property>debug.class</property>
+                        <folder>parsetest/sai/external</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="debug.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>debug-selected-file-in-simserver</target>
+                    <context>
+                        <property>debug.class</property>
+                        <folder>examples/sai/simserver</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+                <action name="run.single">
+                    <script>nbproject/nbjdk.xml</script>
+                    <target>run-selected-file-in-simserver</target>
+                    <context>
+                        <property>run.class</property>
+                        <folder>examples/sai/simserver</folder>
+                        <pattern>\.java$</pattern>
+                        <format>java-name</format>
+                        <arity>
+                            <one-file-only/>
+                        </arity>
+                    </context>
+                </action>
+            </ide-actions>
+            <export>
+                <type>folder</type>
+                <location>apps/browser/classes</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>classes</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>classes</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>apps/cadfilter/classes</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>examples/browser</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>parsetest/scripts</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>apps/replica/classes</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>parsetest/eai</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>parsetest/xj3d_extensions/dis</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>parsetest/sai/external</location>
+                <script>nbproject/nbjdk.xml</script>
+                <build-target>build</build-target>
+            </export>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>Source Packages</label>
+                        <location>src/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>Browser App Source Packages</label>
+                        <location>apps/browser/src/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>Test Packages</label>
+                        <location>test</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>CadFilter App Source Packages</label>
+                        <location>apps/cadfilter/src/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>Replica App Source Packages</label>
+                        <location>apps/replica/src/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>Browser Examples</label>
+                        <location>examples/browser</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>examples/sai/simserver</label>
+                        <location>examples/sai/simserver</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>EAI Examples</label>
+                        <location>parsetest/eai</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>parsetest/sai/external</label>
+                        <location>parsetest/sai/external</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>parsetest/scripts</label>
+                        <location>parsetest/scripts</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>DIS Examples</label>
+                        <location>parsetest/xj3d_extensions/dis</location>
+                    </source-folder>
+                    <source-file>
+                        <location>${ant.script}</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
+                    <ide-action name="javadoc"/>
+                    <ide-action name="run"/>
+                    <ide-action name="test"/>
+                    <ide-action name="debug"/>
+                    <action>
+                        <script>${ant.script}</script>
+                        <label>all</label>
+                        <target>all</target>
+                    </action>
+                    <action>
+                        <script>${ant.script}</script>
+                        <label>compile</label>
+                        <target>compile</target>
+                    </action>
+                    <action>
+                        <script>${ant.script}</script>
+                        <label>dist (create distributable jars)</label>
+                        <target>dist</target>
+                    </action>
+                    <action>
+                        <script>${ant.script}</script>
+                        <label>build installers</label>
+                        <target>build.installers</target>
+                    </action>
+                    <ide-action name="profile"/>
+                </context-menu>
+            </view>
+            <subprojects/>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/4">
+            <compilation-unit>
+                <package-root>apps/browser/src/java</package-root>
+                <classpath mode="compile">lib/aviatrix3d-all_3.1.0-nps.jar:lib/dis-enums.jar:lib/geoapi-nogenerics-2.1.0.jar:lib/gt2-main-2.4.4.jar:lib/gt2-metadata-2.4.4.jar:lib/gt2-referencing-2.4.4.jar:lib/jhall.jar:lib/js.jar:lib/jsr108-0.01.jar:lib/j3d-org-all_3.0.0-nps.jar:lib/hibernate-jpa-2.0-api-1.0.0.Final.jar:lib/odejava.jar:lib/open-dis_4.08.jar:lib/openmali.jar:lib/smack.jar:lib/smackx.jar:lib/toxiclibscore.jar:lib/vecmath.jar:lib/jgeom-core.jar:classes:lib/jogamp-fat.jar:lib/uri.jar:lib/vlc_uri.jar</classpath>
+                <built-to>apps/browser/classes</built-to>
+                <javadoc-built-to>apps/browser/docs/javadoc</javadoc-built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/java</package-root>
+                <classpath mode="compile">lib/aviatrix3d-all_3.1.0-nps.jar:lib/dis-enums.jar:lib/geoapi-nogenerics-2.1.0.jar:lib/gt2-main-2.4.4.jar:lib/gt2-metadata-2.4.4.jar:lib/gt2-referencing-2.4.4.jar:lib/hibernate-jpa-2.0-api-1.0.0.Final.jar:lib/j3d-org-all_3.0.0-nps.jar:lib/jgeom-core.jar:lib/jmf.jar:lib/js.jar:lib/jsr108-0.01.jar:lib/odejava-jni.jar:lib/odejava.jar:lib/open-dis_4.08.jar:lib/openmali.jar:lib/smack.jar:lib/smackx.jar:lib/toxiclibscore.jar:lib/vecmath.jar:lib/jogamp-fat.jar:lib/FastInfoset-1.2.17.jar:lib/jaxb-api.jar:lib/uri.jar:lib/vlc_uri.jar</classpath>
+                <built-to>classes</built-to>
+                <javadoc-built-to>docs/javadoc</javadoc-built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>test</package-root>
+                <unit-tests/>
+                <classpath mode="compile">lib/aviatrix3d-all_3.1.0-nps.jar:lib/dis-enums.jar:lib/geoapi-nogenerics-2.1.0.jar:lib/gt2-main-2.4.4.jar:lib/gt2-metadata-2.4.4.jar:lib/gt2-referencing-2.4.4.jar:lib/js.jar:lib/jsr108-0.01.jar:lib/j3d-org-all_3.0.0-nps.jar:lib/odejava.jar:lib/open-dis_4.08.jar:lib/hibernate-jpa-2.0-api-1.0.0.Final.jar:lib/openmali.jar:lib/smack.jar:lib/smackx.jar:lib/toxiclibscore.jar:lib/uri.jar:lib/vecmath.jar:lib/vlc_uri.jar:lib/jgeom-core.jar:classes:apps/browser/classes:apps/cadfilter/classes:lib/support/junit-4.8.1.jar:lib/jogamp-fat.jar</classpath>
+                <built-to>classes</built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>apps/cadfilter/src/java</package-root>
+                <classpath mode="compile">lib/aviatrix3d-all_3.1.0-nps.jar:lib/commons-compress-1.10.jar:lib/dis-enums.jar:lib/geoapi-nogenerics-2.1.0.jar:lib/gt2-main-2.4.4.jar:lib/gt2-metadata-2.4.4.jar:lib/gt2-referencing-2.4.4.jar:lib/js.jar:lib/jsr108-0.01.jar:lib/j3d-org-all_3.0.0-nps.jar:lib/odejava.jar:lib/open-dis_4.08.jar:lib/hibernate-jpa-2.0-api-1.0.0.Final.jar:lib/openmali.jar:lib/smack.jar:lib/smackx.jar:lib/toxiclibscore.jar:lib/vecmath.jar:lib/jgeom-core.jar:classes:lib/jogamp-fat.jar:lib/uri.jar:lib/vlc_uri.jar</classpath>
+                <built-to>apps/cadfilter/classes</built-to>
+                <javadoc-built-to>apps/cadfilter/docs/javadoc</javadoc-built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>examples/browser</package-root>
+                <classpath mode="compile">lib/aviatrix3d-all_3.1.0-nps.jar:lib/dis-enums.jar:lib/geoapi-nogenerics-2.1.0.jar:lib/gt2-main-2.4.4.jar:lib/gt2-metadata-2.4.4.jar:lib/gt2-referencing-2.4.4.jar:lib/js.jar:lib/jsr108-0.01.jar:lib/j3d-org-all_3.0.0-nps.jar:lib/odejava.jar:lib/open-dis_4.08.jar:lib/hibernate-jpa-2.0-api-1.0.0.Final.jar:lib/openmali.jar:lib/smack.jar:lib/smackx.jar:lib/toxiclibscore.jar:lib/vecmath.jar:lib/jgeom-core.jar:classes:lib/jogamp-fat.jar:lib/uri.jar:lib/vlc_uri.jar</classpath>
+                <built-to>examples/browser</built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>parsetest/scripts</package-root>
+                <classpath mode="compile">lib/aviatrix3d-all_3.1.0-nps.jar:lib/dis-enums.jar:lib/geoapi-nogenerics-2.1.0.jar:lib/gt2-main-2.4.4.jar:lib/gt2-metadata-2.4.4.jar:lib/gt2-referencing-2.4.4.jar:lib/js.jar:lib/jsr108-0.01.jar:lib/j3d-org-all_3.0.0-nps.jar:lib/odejava.jar:lib/open-dis_4.08.jar:lib/hibernate-jpa-2.0-api-1.0.0.Final.jar:lib/openmali.jar:lib/smack.jar:lib/smackx.jar:lib/toxiclibscore.jar:lib/uri.jar:lib/vecmath.jar:lib/vlc_uri.jar:lib/jgeom-core.jar:classes:lib/jogamp-fat.jar</classpath>
+                <built-to>parsetest/scripts</built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>apps/replica/src/java</package-root>
+                <classpath mode="compile">lib/aviatrix3d-all_3.1.0-nps.jar:lib/geoapi-nogenerics-2.1.0.jar:lib/gt2-main-2.4.4.jar:lib/gt2-metadata-2.4.4.jar:lib/gt2-referencing-2.4.4.jar:lib/js.jar:lib/jsr108-0.01.jar:lib/j3d-org-all_3.0.0-nps.jar:lib/odejava.jar:lib/hibernate-jpa-2.0-api-1.0.0.Final.jar:lib/openmali.jar:lib/smack.jar:lib/smackx.jar:lib/toxiclibscore.jar:lib/uri.jar:lib/vecmath.jar:lib/vlc_uri.jar:lib/jgeom-core.jar:classes:lib/jogamp-fat.jar</classpath>
+                <built-to>apps/replica/classes</built-to>
+                <javadoc-built-to>apps/replica/docs/javadoc</javadoc-built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>parsetest/eai</package-root>
+                <classpath mode="compile">classes:lib/aviatrix3d-all_3.1.0-nps.jar</classpath>
+                <built-to>parsetest/eai</built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>parsetest/xj3d_extensions/dis</package-root>
+                <classpath mode="compile">classes</classpath>
+                <built-to>parsetest/xj3d_extensions/dis</built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>parsetest/sai/external</package-root>
+                <classpath mode="compile">classes:lib/aviatrix3d-all_3.1.0-nps.jar:lib/j3d-org-all_3.0.0-nps.jar</classpath>
+                <built-to>parsetest/sai/external</built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>examples/sai/simserver</package-root>
+                <classpath mode="compile">classes:lib/aviatrix3d-all_3.1.0-nps.jar:lib/open-dis_4.08.jar</classpath>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+        </java-data>
+        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>accessor</word>
+            <word>antialias</word>
+            <word>antialiasing</word>
+            <word>classpath</word>
+            <word>config</word>
+            <word>copyleft</word>
+            <word>ecmascript</word>
+            <word>externproto</word>
+            <word>fontstyle</word>
+            <word>Hashmap</word>
+            <word>html</word>
+            <word>http</word>
+            <word>Immersive</word>
+            <word>initialise</word>
+            <word>initialises</word>
+            <word>lgpl</word>
+            <word>multisamples</word>
+            <word>namespace</word>
+            <word>org</word>
+            <word>README</word>
+            <word>Sourceforge</word>
+            <word>tooltip</word>
+            <word>txt</word>
+            <word>uninitialised</word>
+            <word>www</word>
+            <word>xml</word>
+        </spellchecker-wordlist>
+    </configuration>
+</project>

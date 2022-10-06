@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<X3D profile="Immersive">
+  <Scene>
+    <NavigationInfo type="EXAMINE"/>
+    <Group>
+      <Shape>
+        <IndexedFaceSet>
+          <fieldValue count="3" name="coordIndex">
+              0 1 2
+          </fieldValue>
+          <fieldValue count="3" name="colorIndex">
+              0 2 2
+          </fieldValue>
+          <Coordinate>
+            <fieldValue count="9" name="point">
+                0 0 0, 1 0 0, 0 1 0 
+            </fieldValue>
+          </Coordinate>
+          <Color>
+            <fieldValue count="9" name="color">
+                0 0 1, 1 0 0, 0 1 0 
+            </fieldValue>
+          </Color>
+        </IndexedFaceSet>
+      </Shape>
+    </Group>
+  </Scene>
+</X3D>

@@ -1,0 +1,6 @@
+$Id: Readme 11938 2014-10-24 06:33:52Z tnorbraten $
+
+These are specific to project building and are copied to the main build
+directory.  The installation of Apache Ant and proper exports to PATH, i.e
+$ANT_HOME/bin must be observed for these to work from the command line.  The
+user may have to adjust the directory path to the build.xml

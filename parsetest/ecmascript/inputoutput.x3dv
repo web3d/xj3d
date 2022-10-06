@@ -1,0 +1,27 @@
+#X3D V3.0 utf8
+PROFILE Immersive
+
+#Test of inputOutput handing.  Expect to see the initial value of -2 and prints of the fraction
+#as it changes.
+
+#May need spec changes to get this right.
+
+DEF TS TimeSensor {
+   loop TRUE
+}
+
+    DEF SCRIPT Script {
+      inputOutput SFFloat fraction -2
+      url ["ecmascript:
+        function initialize() {
+          Browser.println('initialize()');
+          Browser.println('initial frac value: ' + fraction);
+        }
+        function fraction(val) {
+           Browser.println('fraction: ' + val);
+        }
+      "]
+    }
+
+
+ROUTE TS.fraction_changed TO SCRIPT.fraction

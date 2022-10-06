@@ -1,0 +1,403 @@
+Changes to Xj3D 2.0-RC1 codebase in NPS Branch since:		        JAN 2009
+
+2) added nbproject directory containing ant building dependent files.  This
+directory will allow direct opening of a project in the NetBeans IDE.  This is
+where debugging of Xj3D has been specifically setup for.  The build script for
+the NPS nbproject is "build_nps.xml" to differentiate
+
+3) Added the NPS derived nbproject directory to ./contrib/netbeans.
+
+4) included an xj3d_profile that can be sourced from the command line.  It is
+copied down during a build from ./bin (only necessary for legacy make utility)
+
+5) modified examples/sai/simserver/*.java files to updated NPS OpenDIS (tested SAT).
+Updated trunk versions to correspond
+
+6) in lib/ add jai-codec.jar and jai_core.jar (these are required to run
+tiled-image scenes created by NPS).  For Macs, these two jars are already part of
+the Apple/Java framework and are located in: /System/Library/Java/Extensions along
+with vecmath.jar.  These libs will be found on the bootclasspath first unless you
+specify -Djava.ext.dirs= as a JVM startup arg, or -extdirs "" for javac to bypass
+
+6b) discovered that since jinput.jar is no longer part of the trunk,
+jutils.jar now provides nothing (was required with jinput.jar) and was actually
+zipped in as part of the jinput.jar.  jutils.jar removed from the trunk on
+02 SEP 2011
+
+7) modified parsetest/dis/*.java files to updated NPS OpenDIS (tested SAT).
+Updated trunk versions to correspond
+
+8) Added ./natives for convenience when using ant to run the browser.  Trunk
+followed suite DEC 2011
+
+9) in ./src/install/izpack/macosx added references to NPS OpenDIS jars
+
+10) in ./src/java:
+
+	added org.web3d.util.Version to handle regex updating of version build info
+        (implemented for NPS building via Ant only, not make)
+
+	all classes here:
+	org/web3d/vrml/scripting/browser/CommonBrowser.java
+	org/web3d/vrml/scripting/external/sai/SAIBrowser.java
+	org/xj3d/ui/awt/widgets/AWTConsoleWindow.java
+	org/xj3d/ui/awt/widgets/SwingConsoleWindow.java
+	org/xj3d/ui/construct/LoggingErrorReporter.java
+	org/xj3d/ui/construct/SystemErrorReporter.java
+	-> use the VERSION field from org.web3d.utils.Version vice org.web3d.browser.Xj3DConstants
+
+        typed various containers in org.web3d.vrml.lang.BasicScene to return the
+        most super type collection implementation. This touched a lot of
+        other classes throughout the source tree.  Could not type getBySecondaryType(int type)
+        because it would break the compile order of the trunk and it's proving too
+        difficult to find the best super type of what this method should return.  There are
+        many types that do not have VRMLNode as the most super type reference
+        such as VRMLSingleExternalNodeType extends VRMLExternalNodeType.
+
+        Also, can not type getRouteDecls() of org.web3d.vrml.nodes.VRMLProtoDeclare
+        due to the fact that ProtoROUTE is not yet compiled which would cause a
+        compile error in the trunk.
+
+        modified Branch with NPS OpenDIS.  Now incorporated into the trunk via
+        Yumetech permission
+
+	updated HowToInstall.html with call to "make xml" in the compile code
+        section (missing) updated src/java/overview.html link to ImageLoader lib
+        from vlc.com.au
+
+11) There may be other areas where I typed collections (generics), but tried to
+list all source code files where I did so in this log.  If we are to bring Xj3D
+into the future, we need to observe strict typing of collections is order to
+ensure a safer runtime environment.
+
+11a) There are a LOT of javadoc comments either missing, or incorrect
+all-together in the trunk
+
+12) Have attempted faithfully to follow coding conventions listed in:
+http://www.xj3d.org/arch/codedoc.html
+
+13) Have worked many long and off-duty hours to implement these changes for the
+benefit the Web3d Consortium community).  These were mostly pro-bono hours.  We
+hope this list satisfies all questions concerning codebase change
+recommendations for the trunk
+
+14) Implemented bugfix to org.web3d.vrml.scripting.ecmascript.builtin.SFRotation in the
+jsFunction_multiply() method, bug 300? and 640.  Implemented in trunk version
+
+15) Added browser.bat, browser.sh, converter.bat and build.xml to bin/install/izpack,
+and, rewrote the izpack installer XML files.  For custom NPS IzPack
+installer launching convenience (Win, Mac and Linux) use one of the scripts to
+launch Xj3D.  These scripts assume Apache Ant is installed and environmental
+paths are set
+
+16) Added import of buildInstallers.xml to bottom of build_nps.xml
+
+17) 24 JUL 09: Found a self assignment of variable "showFPS" in the constructor
+of org.xj3d.ui.awt.browser.ogl.X3DBrowserAWTPanel
+
+18) 04 SEP 09: Compiled a 64bit libodejava.jnilib in order to get rid of
+annoying warning about ODE not being initialized due to wrong architecture in
+the older 32bit jnilib on Macs.  Included an additional odejava-jni.jar that
+is required for the new 64bit jnilib.  The dependency to log4j is no more
+if odejava-jni dependency is adopted.  The older odejava.jar is still required
+due the fact that is doesn't require a plethora of other third party libs that
+the current version ODE Java depends on.  The package org.odejava.ode contains
+all JNI code.  The newer jar odejava-jni.jar only contains this updated package
+and will override the older odejava.jar version JNI classes only if listed first
+in the classpath.  Bug 601 pertains.
+
+19) Need to remain compatible with one JDK platform version behind Oracles's
+current version
+
+20) For AUV Workbench operation, need to check for a System property of:
+org.web3d.vrml.renderer.common.input.dis.DISXMLProtocolHandler in three places:
+
+ - xj3d.browser.Xj3DBrowser
+ - org.web3d.vrml.renderer.ogl.browser.OGLBrowserCanvas
+ - org.xj3d.ui.construct.Construct
+
+This is to distinguish between running binary OpenDIS, or DISXML (XMPP message
+wrapped ESPDUs).  Trunk versions since commented out this check after NPS paid for the
+modification.
+
+Aviatrix3D issues:
+
+21a) On 22 JAN 2010, discovered on Mac OS X 10.6.2 (Snow Leopard),
+org.j3d.aviatrix3d.ConeSound was indicating an error while setting the OpenAL
+parameter of AL_REFERENCE_DISTANCE in the render() method.  Upon inspection of
+the super class of ConeSound, which is PointSound, the protected field of
+"refDistance" was initialized to 0.0f.  This may have caused a native divide
+by zero issue.  Setting this value to 1.0f at initialization cleared the
+problem.  Bug 609
+
+21b) On 20 DEC 2011, corrected an issue with an IllegalStateException
+being thrown when calling setLive(boolean) for either SharedNode or SharedGroup
+instances with the following in org.j3d.aviatrix3d.BaseGroup line 342:
+
+from: childList[i].setLive(state);
+
+to: if (childList[i] instanceof MultiParentNode) {
+        ((MultiParentNode) childList[i]).setLive(childList[i], state);
+    } else {
+        childList[i].setLive(state);
+    }
+
+22) As of 18 APR 2011, here is an exhaustive list of all files (continued from #10)
+I have touched that are in difference with the trunk (notes pertain to the class above it).
+Only bug fixes, typing of containers, removing of redundant casts, TODO notes, etc.,
+are in difference with the trunk.  Javadoc corrections, formatting, removing
+unused imports and other such cosmetic changes have been reverted since they do
+not improve runtime operation.  While I found many examples of these types of
+cosmetic changes to perform, they must be changed in the trunk and merged back
+into the branch in order to propagate.  Operation changes therefore include:
+
+in ./src/java:
+
+org/web3d/parser/GeneralisedReader.java
+
+    The character used on line 197 may cause compiler error unless ISO-8859-1
+    encoding is used for compilation.  Added upon R 9473 by Russel which NetBeans
+    diff shows as a 'ï¿½'.  mac default Safari encoding shows it as a 'â€¡' and
+    ISO-8859-1 (Latin-1) shows it correctly as a 'Ã'.
+
+org/web3d/vrml/scripting/browser/CommonBrowser.java
+
+    using NPS Version tag
+
+org/web3d/vrml/scripting/ecmascript/builtin/SFRotation.java
+
+    bug 506 fix
+
+org/xj3d/impl/core/eventmodel/DefaultRigidBodyPhysicsManager.java
+
+    Bug 601 fix
+
+org/xj3d/impl/core/eventmodel/DefaultNetworkManager.java
+
+    where a NetworkProtocolHandler was used as a key, this was incorrect.  Strings
+    are the proper keys for retrieving values from a Map.  Typed the Map containing
+    NetworkProtocolHandler
+
+org/xj3d/impl/core/eventmodel/DefaultFrameStateManager
+
+    Fixed XMSF bugs #439 and #1317
+
+org/xj3d/ui/awt/browser/ogl/X3DBrowserAWTPanel.java
+
+    Found a self assignment of variable "showFPS"
+
+org/xj3d/ui/awt/net/content/AWTImageContentHandler.java
+
+    unhide image variable in getContent
+
+org/xj3d/ui/awt/widgets/SwingConsoleWindow.java
+
+    using NPS org.web3d.util.Version vice Xj3DConstants
+
+org/xj3d/ui/construct/Construct.java
+
+    implemented a PrivilegedAction to handle parsing the property value for DIS Protocol Handler
+
+org.web3d.vrml.renderer.ogl.browser.ViewpointResizeManager
+    Discovered potential bug where the method addViewpoint() checked the
+    nodeDataMap with an incorrect key. The correct key is of VRMLViewpointNodeType
+    not ViewEnvironment.
+
+in spec_examples:
+
+spec_examples/x3d/SAIExample2.java
+spec_examples/x3d/SAIExample4.java
+spec_examples/x3d/SAIExample5.java
+
+in parsetest:
+
+parsetest/scripts/CreateStringTest.java
+parsetest/scripts/MoveObjectTest.java
+parsetest/scripts/BrowserBasics.java
+parsetest/scripts/NodeValueTest.java
+parsetest/eai/VrmlEventListener1.java
+parsetest/sai/external/InteractiveRemoveRootNodeTest.java
+parsetest/sai/external/InteractiveRemoveRootNodeTestWithDEF.java
+parsetest/sai/external/SAICoordinateDemo.java
+parsetest/sai/external/level3/SAIIndexedLineSetTest.java
+parsetest/sai/external/level3/SAIPositionInterpolatorTest.java
+parsetest/sai/external/level3/SAIIndexedFaceSetTest.java
+parsetest/sai/external/AnchorViewpointBindTest.java
+parsetest/sai/internal_java/EventTest.java
+parsetest/sai/internal_java/BrowserBasics.java
+parsetest/sai/internal_java/FieldValueTest.java
+parsetest/sai/internal_java/FieldLoadTest.java
+parsetest/sai/internal_java/CreateProtoTest.java
+parsetest/xj3d_extensions/combined/CarDampingProcessor.java
+parsetest/xj3d_extensions/combined/CarContactProcessor.java
+
+in examples:
+
+examples/SAI_DOM_Demo/SAIDOMDemo.java
+examples/SAI_DOM_Demo/HelloWorldSAI.java
+added examples/browser/X3DLoader.java
+examples/browser/DemoFrame.java
+examples/browser/OGLMultiWallBrowser.java
+examples/browser/OGLBrowser.java
+examples/browser/OGLLightweightBrowser.java
+examples/browser/DIYBrowser.java
+examples/binary/X3DSerializer.java
+examples/applet/Xj3DApplet.java
+examples/loader/AV3DLoaderDemo.java
+examples/sav/SAVWriterExample.java
+examples/sai/AddRouteSAIDemo.java
+examples/sai/OffscreenSAIDemo.java
+
+in apps/browser:
+
+apps/browser/xj3d/browser/SceneTreeViewer.java
+
+    unhide scene variable, cast to super type
+    unhide treeModel variable
+
+apps/browser/xj3d/browser/Xj3DBrowser.java
+
+    lines 822 - 910 uncommented and added back in check for use of DIS binary, or XMPP
+
+in apps/cadfilter:
+
+apps/cadfilter/xj3d/cdfviewer/CDFViewer.java
+
+    bug fix 615
+
+in apps/installer:
+
+apps/installer/web3d/install/Web3dInstaller.java
+
+    use static ClassLoader.getResourceAsStream()
+
+NOTE:
+The SVN CLI call for a thorough diff is given here: Open up a terminal in a source
+directory from the branch, i.e. /javaapis/NPS-Xj3D/apps/cadfilter/src/java
+and execute this command to produce a "difflog" of any diffs:
+svn diff --old . --new http://svn.xj3d.org/xj3d_code/trunk/apps/cadfilter/src/java > difflog
+
+23) Fixed a usability issue with old inlined viewpoints not being removed when a
+new inline is dynamically inserted. XMSF Bugs 439 and 1317 pertain.  The fix was
+implemented in:
+http://svn.xj3d.org/xj3d_code/branches/NPS/org/xj3d/impl/core/eventmodel/DefaultFrameStateManager.java
+
+24) 14 APR 2010, filed bug 615 on xj3d.cdfviewer.CDFViewer
+
+25) 26 AUG 2010: Update to #18 above.  Even though we were successful in creating
+a 64bit binary universal to Macs, all rigid body physics example renderings were
+still broken.  A bit of refactoring of how Xj3D deals with ODE was performed in
+order to reactivate rigid body physics rendering.  Explanation follows:
+    a) The java.net CVS project for ODE included most platform binaries, both
+       32bit and 64bit, except for Mac.  That was fixed in #18 above.  All
+       working ODE native binaries are in the NPS Branch directory
+       "natives" and are:
+       libodejava.so
+       libodejava64.so
+       odejava.dll
+       odejava64.dll
+       libodejava.jnlib (universal binary for PPC and Intel 32/64 bit)
+       Note: the old libodejava.dylib found in installer versions is no longer required
+    b) Due to some refactoring from ODE team for java.net, all the JNI code was
+       moved out of the main ODE branch into its own code base resulting in an
+       extra jar: odejava-jni.jar.  This must be found first in the classpath
+    c) The main class for the JNI code required one refactor to the static init()
+       method.  Xj3D requires a boolean return type (static block of
+       DefaultRigidBodyPhysicsManager) and the latest revision to
+       org.odejava.ode.OdeJava.init() was refactored to a void return type (fixed).
+    d) There was some refactoring in the main ODE branch that did away with
+       javax.vecmath and introduced org.openmali.vecmath2.  This API is contained
+       in a jar named openmali.jar which is now required in the classpath.
+    e) Xj3D code that required some refactoring to be compatible with the latest
+       ODE are:
+
+       org.xj3d.impl.core.eventmodel.DefaultRigidBodyPhysicsManager
+       org.web3d.vrml.renderer.common.nodes.rigidphysics.BaseCollidableNode
+       org.web3d.vrml.renderer.common.nodes.rigidphysics.BaseCollidableShape
+       org.web3d.vrml.renderer.common.nodes.rigidphysics.BaseContact
+       org.web3d.vrml.renderer.common.nodes.rigidphysics.BaseRigidBody
+
+       There are comments in each of these that explain why the refactor was
+       necessary in the NPS Branch versions
+
+       The main challenge was to keep the javax.vecmath.Matrix4f transform matrix
+       that Aviatrix3d requires intact and to transpose the org.openmali.vecmath2
+       versions of AxisAngle4f and Vector3f values to properly initialize the
+       javax.vecmath.Matrix4f before passing to Aviatrix3d.
+    f) Required jars for ODE are in the NPS Branch "lib" directory and are:
+       odejava-jni.jar
+       odejava.jar
+       openmali.jar
+    g) The dependency on log4j is no longer required.  ODE refactored logging to
+       use the java.util.Logging API.
+
+26) 13 SEP 2011: Corrected issue in org.web3d.vrml.renderer.common.input.dis.DISConnectionHandler
+where the BehaviorProducerUDP thread in OpenDIS was not daemon which prevented
+the JVM from shutting down.
+
+27) Corrected runtime error thrown by JOGL when the gluegen-rt.jar is not
+explicitly named in the JVM startup/runtime classpath.
+
+28) Need to fix ImageLoader resolving by creating a 64 bit version native:
+ http://www.vlc.com.au/resources/48-svn-details.html
+
+29) Get rid of no longer supported OPTIMIZE_TOKEN_MANAGER in javacc/vrml/VRML97Relaxed.jj
+and corresponding Ant target attribute invoking the same during parser generation.
+Named the parsers the same as the main classes they make to preclude JavaCC from
+building them each time a build is ran.  These were suggestions offered by
+Vince Marchetti who improved the jgeom lib for mesh and NURBS operations.
+
+30) Add import/export example scenes to parsetest
+
+31) Addressed issue in org.xj3d.ui.awt.browser.ogl.BrowserJPanel.java where
+hardcoded values were passed for anti-aliasing vice letting JOGL tell us what
+the maximum number of available FSAA samples via its GLCapabilities improvements
+
+32) Addressed fix for NPE when employing the replica (headless) screen capture app
+for capturing screen shots of scripted scenes by building the script engines.
+
+33) 22 AUG 2012, added diagnostic sys outs to web3d.vrml.renderer.ogl.nodes.geom3d.OGLExtrusion
+for debugging extrusion issues
+
+34) Line 706: VRMLGroupNodeType was left inadvertently when VRMLBoundedNodeType
+was meant for setShared.  The former threw an error when rendering
+coloured_boxex.wrl (Proto example). org.web3d.vrml.renderer.common.nodes.BaseGroupingNode
+
+35) Don set AA, AAQ, TQ, and PQ all to true/high which are more than the defaults:
+src/java/org/xj3d/sai/BrowserConfig.java
+
+36) Found two DynamicGridLayout instances.  One in package xj3d.browser.ui and
+one in org.xj3d.ui.awt.widgets.  Recommend we deprecate the one in xj3d.browser.ui
+as a "find usages" function reported this one as unused.
+
+37) In org.web3d.vrml.renderer.common.nodes.BaseSensorNode.BaseProximitySensor,
+there are two static fields, FIELD_ENABLED and FIELD_IS_ACTIVE which are already
+defined in its super class BaseSensorNode, but are given different values than
+the super's version.  They are used to index an array and a HashMap in the static
+constructor block.  The main concern is that these values are used to check for
+the correct sendRoute function.  There were two booleans that were hidden,
+isEnabled and isActive (removed them and their setters/getters from the subclass,
+but need to check that this doesn't break anything).  A similar issue is happening in
+org.web3d.vrml.renderer.common.nodes.rigidphysics.BaseCollisionSensor with
+hiding the FIELD_ENABLED field from the super.
+
+38) remove empty statement delimeter after if statement line 138 (potential bug)
+org.web3d.vrml.renderer.ogl.nodes.shape.OGLPointProperties (02 APR 13)
+
+39) In order to convert a rigid body physics scene, the DefaultRigidBodyPhysicsManager
+must be initialized by the CadFilter startup process, else an UnsatisfiedLinkError
+will be thrown
+
+40) 27 JUN 2014: Implemented the Arc2D on the OGL and NR render packages.  Still
+need to implement the SAI node
+
+41) 10 OCT 2014: Major update to Aviatrix3D in which we are now invoking JOGL's
+Native Windowing Tookkit (NEWT) to render the 3D pipeline which has the
+advantage of offering a way to decouple from the AWT/Swing EDT model which now
+paves the way towards efficient multi-threaded rendering.  Simple
+explanation here: https://sites.google.com/site/justinscsstuff/jogl-tutorial-2
+Jogamp has also implemented Automated Native Library Loading:
+http://jogamp.org/jogl/doc/userguide/#automatednativelibraryloading
+
+                                23 OCT 2014
+*** NFE this log.  Refer now to the RELEASE_NOTES in the base directory ***

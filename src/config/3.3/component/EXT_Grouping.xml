@@ -1,0 +1,9 @@
+<componentConfig>
+  <component name="EXT_Grouping`" title="Web3D EXT Grouping Extension component" levels="1" url="http://www.web3d.org/">
+    <nodeLocation type="null" package="org.web3d.vrml.renderer.norender.nodes.group"/>
+    <nodeLocation type="ogl" package="org.web3d.vrml.renderer.ogl.nodes.group"/>
+    <componentLevel level="1">
+      <node name="MatrixTransform"/>
+    </componentLevel>
+  </component>
+</componentConfig>

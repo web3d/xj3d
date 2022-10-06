@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Preserved to record how Ant was used to invoke legacy make building of Xj3D -->
+<!-- Uncomment and place at the bottom of build_nps.xml -->
+<!--import file="${bin.dir}/legacy-building.xml"/-->
+
+<project name="Xj3D 2.0 NPS branch" default="make.build" basedir="..">
+    <description>Builds, tests, and runs the project NPS Xj3D 2.0 using legacy make</description>
+
+    <!-- $Id: build_nps.xml 11804 2013-06-25 01:15:48Z brutzman $ -->
+
+    <!--
+    ============
+    INIT SECTION
+    ============
+    -->
+
+    <target name="platformInitialize" depends="platformType,initializeWindows,initializeUnix,initializeMac"/>
+    <target name="platformType">
+        <condition property="isWindows" >
+            <os family="windows"/>
+        </condition>
+        <condition property="isMac" >
+            <os family="mac"/>
+        </condition>
+
+        <!-- Based on Apache Ant user-manual example -->
+        <condition property="isUnixNotMac">
+            <and>
+                <os family="unix"/>
+
+                <not>
+                    <equals arg1="${os.name}" arg2="Mac OS X"/>
+                </not>
+
+            </and>
+        </condition>
+    </target>
+    <target name="initializeWindows" if="isWindows" depends="initializeAll">
+        <property name="os"       value="win"/>
+        <!--
+# On PCs, requires Cygwin to be installed.  See ${bin.dir}/xj3d_profile for
+# setting specific paths for your particular system.  xj3d_profile will then be
+# copied down into the ${basedir} to be sourced from the execution shell
+        -->
+        <property name="cygwin.dir" value="/cygwin"/>
+        <property name="bash"       value="${cygwin.dir}/bin/bash"/>
+    </target>
+    <target name="initializeUnix" if="isUnixNotMac" depends="initializeAll">
+        <property name="os"       value="unix"/>
+        <property name="bash"     value="/bin/bash"/>
+    </target>
+    <target name="initializeMac" if="isMac" depends="initializeAll">
+        <property name="os"       value="mac"/>
+        <property name="bash"     value="/bin/bash"/>
+    </target>
+    <target name="initializeAll" >
+    </target>
+
+    <target name="init" depends="platformInitialize">
+        <tstamp/>
+    </target>
+
+    <!--
+    ====================
+    LEGACY BUILD SECTION
+    ====================
+    -->
+
+    <target name="make.init" depends="init">
+        <copy todir=".">
+            <fileset dir="${bin.dir}">
+                <include name="xj3d_profile"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="make.clean" depends="make.init">
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="echo &quot;Working directory is: &quot; ; pwd ; source xj3d_profile ; make clean"/>
+        </exec>
+    </target>
+
+    <!-- Assumes you have the latest javacc installed and local to this project -->
+    <target name="make.parsers" depends="make.init">
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; make parsers"/>
+        </exec>
+    </target>
+
+    <!-- This takes forever b/c it's compiling one source file at a time... -->
+    <target name="make.ogl" depends="make.init">
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; make ogl"/>
+        </exec>
+    </target>
+
+    <target name="make.images" depends="make.init">
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; make images"/>
+        </exec>
+    </target>
+
+    <target name="make.xml" depends="make.init">
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; make xml"/>
+        </exec>
+    </target>
+
+    <target name="make.config" depends="make.init">
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; make config"/>
+        </exec>
+    </target>
+
+    <!-- This takes forever b/c it's compiling one source file at a time... -->
+    <target name="make.browser" depends="make.init">
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; cd apps/browser; make class"/>
+        </exec>
+    </target>
+
+    <!-- This takes forever b/c it's compiling one source file at a time... -->
+    <target name="make.cadfilter" depends="make.init">
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; cd apps/cadfilter; make class"/>
+        </exec>
+    </target>
+
+    <!-- This makes the individual Xj3D jars Yumetech style -->
+    <target name="make.jars" depends="make.init">
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <!--arg value="source xj3d_profile ; make -f src/java/Makefile-opengl jar"/-->
+            <arg value="source xj3d_profile ; make ogl-jar"/>
+        </exec>
+    </target>
+
+    <target name="make.apps.jars" depends="make.init">
+
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; cd apps/browser; make jar"/>
+        </exec>
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; cd apps/cadfilter; make jar"/>
+        </exec>
+
+    </target>
+
+    <target name="make.docs" depends="make.compile.all">
+
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; make parserdoc"/>
+        </exec>
+        <exec executable="${bash}">
+            <arg value="--login"/>
+            <arg value="-i"/>
+            <arg value="-c"/>
+            <arg value="source xj3d_profile ; make ogl-javadoc"/>
+        </exec>
+
+    </target>
+
+    <target name="make.compile.all" depends="make.parsers,make.ogl,make.browser,make.cadfilter"/>
+
+    <target name="make.build" depends="make.compile.all,make.images,make.xml,make.config"/>
+
+    <!-- This will make the individual xj3d-*_2.0.0.jar type jars -->
+    <target name="make.all.jars"
+            depends="make.build,make.jars,make.apps.jars"
+            description="Build Xj3D via legacy Make"/>
+
+    <!--
+    ==================
+    END LEGACY SECTION
+    ==================
+    -->
+
+</project>

@@ -1,0 +1,20 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Transform {
+   translation 0 0 -10
+   children [
+Inline {
+  url [ "../external/inlined_boxes.wrl" ]
+}
+]}
+
+Shape {
+   geometry Box {}
+   appearance Appearance {
+      texture ImageTexture {
+         url ["../Appearance/vts.jpg"]
+      }
+   }
+}

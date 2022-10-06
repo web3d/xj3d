@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<!--
+    Izpack installation file for the AUV Workbench app.
+    Based on the IzPack sample.
+    http://izpack.org/documentation
+-->
+
+<installation version="1.0">
+  <variables>
+    <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+  </variables>
+
+  <info>
+    <appname>@{product.Name}</appname>
+    <!-- the application name -->
+    <appversion>v@{product.Version}</appversion>
+    <!-- the application version -->
+    <appsubpath>Xj3D</appsubpath>
+    <!-- the subpath for the default of the installation path. A variable substitution and a maskable slash-backslash conversion will be done. If this tag is not defined, the application name will be used instead. -->
+    <authors>
+      <author name="@{impl.vendor}" email="info@yumetech.com"/>
+      <author name="@{my.name}" email="@{my.email}"/>
+    </authors>
+    <url>@{product.url}</url>
+    <!-- the application official website url -->
+    <uninstaller write="yes" name="Xj3Duninstaller.jar"/>
+    <!-- specifies whether to create an uninstaller after installation, and which name to use for it. This tag has the write attribute, with default value `` yes``. If this tag is not specified, the uninstaller will still be written. The name attribute can be used to change the default name of the generated uninstaller, i.e. `` uninstaller.jar``. -->
+    <javaversion>1.7</javaversion>
+    <!-- specifies the minimum version of Java required to install your program. Values can be 1.2, 1.2.2, 1.4, etc. The test is a lexical comparison against the java.version System property on the install machine. -->
+    <requiresjdk>no</requiresjdk>
+    <!-- specifies the path for the logfile of the SummaryLoggerInstallerListener. -->
+    <summarylogfilepath>$INSTALL_PATH/InstallSummary.htm</summarylogfilepath>
+    <!-- Hopefully helps with Win Vista/7 installs -->
+    <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+  </info>
+
+  <guiprefs height="600" width="800" resizable="yes">
+    <laf name="looks">
+      <os family="windows,unix"/>
+      <param name="variant" value="plastic3D"/>
+    </laf>
+  </guiprefs>
+
+  <locale>
+    <langpack iso3="usa"/>
+  </locale>
+
+    <native type="izpack" name="ShellLink.dll">
+        <os family="windows"/>
+    </native>
+    <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+        <os family="windows"/>
+    </native>
+
+    <!-- In case of 64 bit Windows OS -->
+    <native type="izpack" name="ShellLink_x64.dll">
+        <os family="windows"/>
+    </native>
+
+    <native type="3rdparty" name="COIOSHelper_x64.dll" stage="both">
+        <os family="windows"/>
+    </native>
+
+  <!--
+      The resources section.
+      The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+  -->
+  <resources>
+    <res id="LicencePanel.licence" src="src/install/izpack/license.txt"/>
+    <res id="Installer.image" src="src/install/izpack/Xj3DlogoWhite32.jpg"/>
+    <res id="InfoPanel.info" src="docs/InstallerInfo"/>
+    <res id="shortcutSpec.xml" src="src/install/izpack/shortcutSpec.xml" />
+    <res id="Unix_shortcutSpec.xml" src="src/install/izpack/Unix_shortcutSpec.xml" />
+  </resources>
+
+  <!--
+      The panels section.
+      We indicate here which panels we want to use. The order will be respected.
+  -->
+  <panels>
+    <panel classname="HelloPanel"/>
+    <panel classname="InfoPanel"/>
+    <panel classname="LicencePanel"/>
+    <panel classname="TargetPanel"/>
+    <panel classname="PacksPanel"/>
+    <panel classname="ShortcutPanel"/>
+    <panel classname="SummaryPanel"/>
+    <panel classname="InstallPanel"/>
+    <panel classname="SimpleFinishPanel"/>
+  </panels>
+
+    <listeners>
+        <listener installer="SummaryLoggerInstallerListener">
+            <os family="windows,unix"/>
+        </listener>
+    </listeners>
+
+  <!--
+      The packs section.
+      We specify here our packs.
+  -->
+  <packs>
+    <pack name="Base" required="yes">
+      <description>The base files</description>
+
+      <!-- DIRECTORIES -->
+      <fileset dir="@{dist.dir}" targetdir="$INSTALL_PATH/jar">
+          <include name="*.jar"/>
+          <exclude name="*macosx*.jar"/>
+          <exclude name="*-src.jar"/>
+      </fileset>
+
+      <fileset dir="@{natives.dir}" targetdir="$INSTALL_PATH/natives">
+          <include name="**/*.dll"/>
+          <include name="**/*.so"/>
+      </fileset>
+
+      <fileset dir="@{browser.dir}/doc/javaHelp"                  targetdir="$INSTALL_PATH/doc/javaHelp"/>
+      <fileset dir="@{browser.dir}/images"                        targetdir="$INSTALL_PATH/images"/>
+
+      <!-- FILES -->
+      <file src="src/install/izpack/Xj3D-Convert.ico" targetdir="$INSTALL_PATH"/>
+      <file src="src/install/izpack/xj3d.ico"         targetdir="$INSTALL_PATH"/>
+      <file src="@{bin.dir}/install/izpack/build.xml"     targetdir="$INSTALL_PATH"/>
+      <file src="@{bin.dir}/install/izpack/browser.bat"   targetdir="$INSTALL_PATH"/>
+      <file src="@{bin.dir}/install/izpack/converter.bat" targetdir="$INSTALL_PATH"/>
+      <file src="@{bin.dir}/install/izpack/browser.sh"    targetdir="$INSTALL_PATH"/>
+      <file src="@{bin.dir}/install/izpack/converter.sh"  targetdir="$INSTALL_PATH"/>
+      <file src="@{bin.dir}/ant2html.xsl"                 targetdir="$INSTALL_PATH"/>
+      <file src="@{browser.dir}/moving_box.x3dv"        targetdir="$INSTALL_PATH"/>
+      <file src="@{browser.dir}/Xj3D-256x256.jpg"       targetdir="$INSTALL_PATH"/>
+
+      <file src="README"                      targetdir="$INSTALL_PATH"/>
+      <file src="RELEASE_NOTES"               targetdir="$INSTALL_PATH"/>
+      <file src="RELEASE_NOTES_HISTORY"       targetdir="$INSTALL_PATH"/>
+      <file src="buildStamp.txt"              targetdir="$INSTALL_PATH"/>
+
+      <executable targetfile="$INSTALL_PATH/browser.bat"   stage="never"/>
+      <executable targetfile="$INSTALL_PATH/browser.sh"    stage="never"/>
+      <executable targetfile="$INSTALL_PATH/converter.bat" stage="never"/>
+      <executable targetfile="$INSTALL_PATH/converter.sh"  stage="never"/>
+
+    </pack>
+
+    <!-- The documentation (1 directory) -->
+    <pack name="Documentation" required="no">
+        <description>Xj3D documentation (HTML, ODT and TEXT).</description>
+        <fileset dir="docs" targetdir="$INSTALL_PATH/doc">
+            <exclude name="javadoc/**"/>
+            <exclude name="setup/**"/>
+            <exclude name="NPS-build-procedures-for-Xj3D.txt"/>
+            <exclude name="NPS-SVN-MergeProcedures.txt"/>
+            <exclude name="Xj3D-Codebase-ChangeLog-NPS.txt"/>
+            <exclude name="NetBeans-SVN-Merge.png"/>
+            <exclude name="known-compile-warnings"/>
+            <exclude name="TODO"/>
+            <include name="**"/>
+        </fileset>
+    </pack>
+  </packs>
+
+</installation>

@@ -1,0 +1,20 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+#
+#  Call this with one transform, old transforms should not be touched
+#
+
+Group {
+   children [
+	DEF TRANSFORM_FILTER0 Transform {
+	   translate 0 1 0
+	   children [
+	      Shape {
+		 geometry Box {}
+	       }
+	   ]
+	}
+   ]
+}

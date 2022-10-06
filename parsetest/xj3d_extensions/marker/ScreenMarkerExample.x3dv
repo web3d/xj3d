@@ -1,0 +1,121 @@
+#X3D V3.2 utf8
+PROFILE Immersive
+COMPONENT xj3d_Marker:1
+
+Transform {
+    translation 2 2 2
+    rotation 0 1 0 1.5708
+    children [
+        
+        Viewpoint {
+            position 0 0 25
+            description "+Z"
+        }
+        Viewpoint {
+            position 0 0 -25
+            orientation 0 1 0 3.1416
+            description "-Z"
+        }
+        Viewpoint {
+            position 0 25 0
+            orientation -1 0 0 1.5708
+            description "+Y"
+        }
+        Viewpoint {
+            position 0 -25 0
+            orientation -1 0 0 -1.5708
+            description "-Y"
+        }
+        Viewpoint {
+            position 25 0 0
+            orientation 0 1 0 1.5708
+            description "+X"
+        }
+        Viewpoint {
+            position -25 0 0
+            orientation 0 1 0 -1.5708
+            description "-X"
+        }
+        
+        DEF TG Transform {    
+            translation 0 0 0
+            children [  
+                DEF TARGET Shape {  
+                    geometry Box { }  
+                    appearance Appearance {  
+                        material Material{    
+                            emissiveColor 1 0 0  
+                        }  
+                    }  
+                }
+            ]  
+        }
+    ]
+}
+
+Transform {
+    translation -2 -2 -2
+    rotation 0 -1 0 1.5708
+    children [
+        DEF TG1 Transform {    
+            translation 0 0 0
+            children [  
+                DEF TARGET1 Shape {  
+                    geometry Box { }  
+                    appearance Appearance {  
+                        material Material{    
+                            emissiveColor 1 0 0  
+                        }  
+                    }  
+                }
+            ]  
+        }
+    ]
+}
+
+ScreenMarker {
+    represents USE TARGET
+    iconUrl "blue_bracket.png"
+} 
+
+ScreenMarker {
+    represents USE TARGET1
+    iconUrl "green_bracket.png"
+} 
+
+DEF TS TimeSensor {
+  cycleInterval 10
+  loop TRUE
+}
+
+DEF PI PositionInterpolator {
+  key [ 0 0.25 0.5 0.75 1 ]
+  keyValue [
+     0 0 0
+    -10 10 -5
+    -15 5 0
+     -5 10 10
+     0 0 0
+  ]
+}
+
+DEF TS1 TimeSensor {
+  cycleInterval 15
+  loop TRUE
+}
+
+DEF PI1 PositionInterpolator {
+  key [ 0 0.33 0.5 0.66 1 ]
+  keyValue [
+     0 0 0
+    10 5 5
+    15 -10 0
+     5 -15 -10
+     0 0 0
+  ]
+}
+
+ROUTE TS.fraction_changed TO PI.set_fraction
+ROUTE PI.value_changed TO TG.translation
+ROUTE TS1.fraction_changed TO PI1.set_fraction
+ROUTE PI1.value_changed TO TG1.translation

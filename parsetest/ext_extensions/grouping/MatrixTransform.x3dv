@@ -1,0 +1,26 @@
+#X3D V3.3 utf8
+
+PROFILE Immersive
+COMPONENT EXT_Grouping:1
+
+MatrixTransform {
+   children [
+      Shape {
+         geometry Box {}
+      }
+   ]
+}
+
+MatrixTransform {
+   matrix
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 2 0 1
+   
+   children [
+      Shape {
+         geometry Sphere {}
+      }
+   ]
+}

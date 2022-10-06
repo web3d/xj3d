@@ -1,0 +1,94 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Shape {
+   appearance Appearance {
+      material Material {
+            diffuseColor 1.0 0.0 0.0
+      }
+
+   }
+
+   geometry IndexedTriangleSet {
+         index [0 1 2 3 4 5]
+      coord Coordinate {
+            point [1.0 0.0 1.0, 0.0 1.0 1.0, -1.0 0.0 1.0, -1.0 0.0 1.0, 0.0 -1.0 1.0, 1.0 0.0 1.0]
+      }
+
+      
+   }
+
+}
+Shape {
+   appearance Appearance {
+      material Material {
+            diffuseColor 0.0 1.0 0.0
+      }
+
+   }
+
+   geometry IndexedTriangleSet {
+         index [0 1 2 3 4 5]
+      coord Coordinate {
+            point [1.0 1.0 0.0, 0.0 2.0 0.0, -1.0 1.0 0.0, -1.0 1.0 0.0, 0.0 0.0 0.0, 1.0 1.0 0.0]
+      }
+
+      
+   }
+
+}
+Shape {
+   appearance Appearance {
+      material Material {
+            diffuseColor 0.0 0.0 1.0
+      }
+
+   }
+
+   geometry IndexedTriangleSet {
+         index [0 1 2 3 4 5]
+      coord Coordinate {
+            point [2.0 0.0 0.0, 1.0 1.0 0.0, 0.0 0.0 0.0, 0.0 0.0 0.0, 1.0 -1.0 0.0, 2.0 0.0 0.0]
+      }
+
+      
+   }
+
+}
+Shape {
+   appearance Appearance {
+      material Material {
+            diffuseColor 0.0 1.0 1.0
+      }
+
+   }
+
+   geometry IndexedTriangleSet {
+         index [0 1 2 3 4 5]
+      coord Coordinate {
+            point [0.0 0.0 0.0, -1.0 1.0 0.0, -2.0 0.0 0.0, -2.0 0.0 0.0, -1.0 -1.0 0.0, 0.0 0.0 0.0]
+      }
+
+      
+   }
+
+}
+Shape {
+   appearance Appearance {
+      material Material {
+            diffuseColor 1.0 1.0 0.0
+      }
+
+   }
+
+   geometry IndexedTriangleSet {
+         index [0 1 2 3 4 5]
+      coord Coordinate {
+            point [1.0 -1.0 0.0, 0.0 0.0 0.0, -1.0 -1.0 0.0, -1.0 -1.0 0.0, 0.0 -2.0 0.0, 1.0 -1.0 0.0]
+      }
+
+      
+   }
+
+}

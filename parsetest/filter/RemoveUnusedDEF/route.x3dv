@@ -1,0 +1,9 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+DEF TS TimeSensor {}
+DEF PS PositionInterpolator {}
+DEF SHAPE Shape {}
+
+ROUTE TS.fraction_changed TO PS.set_fraction

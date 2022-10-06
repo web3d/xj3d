@@ -1,0 +1,108 @@
+# For Xj3D development/building via Make and JDK 1.5, this script will set required
+# variables necessary to initialize the Makefile system for Xj3D.  Some of these
+# are already initialized in my /User/tnorb/.bash_profile, hence are commented out.
+
+# This is a Mac specific symbolic link to the JDK I have selected in Java Preferences
+
+#export JAVA_HOME=`/usr/libexec/java_home`
+
+# Necessary modifications for java development work (tdn 09 SEP 2012)
+
+#export ANT_HOME=/javaapis/apache-ant-1.8.4
+#export CVS_RSH="ssh"
+#export SVN_HOME=/opt/subversion
+
+# Ensure known APIs are up front in the path
+#export PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$SVN_HOME/bin:$PATH
+
+# Set up Bash defaults for the environment
+export HISTCONTROL=ignoredups
+
+#-------------- BEGIN setup for the Xj3d development/building environment -----
+
+PATH=$PATH:.
+
+# State the full path of where this project is located
+JAVAAPIS_HOME="/javaapis"
+
+X3D_HOME="${JAVAAPIS_HOME}/NPS-Xj3D"
+
+X3D_LIBS="${X3D_HOME}/lib"
+X3D_CLASSES="${X3D_HOME}/classes"
+X3D_CLASSPATH="${X3D_CLASSES}"
+
+JAVACC_HOME="${X3D_LIBS}/support/javacc-5.0/bin"
+
+# Both JOAL and JOGL libs and natives are now located in the project space in
+# /lib and /natives respectively.  Keep these paths for legacy reference
+JOAL_DEV_ROOT="${JAVAAPIS_HOME}/joal"
+JOAL_DEV_LIB_PATH="${JOAL_DEV_ROOT}/bin"
+JOAL_DEV_CLASSPATH="${X3D_LIBS}/joal.jar"
+JOAL_DEV_CLASSPATH="${JOAL_DEV_CLASSPATH}:${X3D_LIBS}/gluegen-rt.jar"
+
+JOGL_DEV_ROOT="${JAVAAPIS_HOME}/jogl"
+JOGL_DEV_LIB_PATH="${JOGL_DEV_ROOT}/bin"
+JOGL_DEV_CLASSPATH="${X3D_LIBS}/jogl.jar"
+
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/jmf.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/aviatrix3d-all_2.2.0.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/dis-enums.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/geoapi-nogenerics-2.1.0.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/gt2-main-2.4.4.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/gt2-referencing-2.4.4.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/hibernate-jpa-2.0-api-1.0.0.Final.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/httpclient.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/j3d-org-all_2.0.0.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/js.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/jsr108-0.01.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/odejava-jni.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/odejava.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/open-dis_4.06.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/uri.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/vecmath.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_LIBS}/vlc_uri.jar"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_HOME}/apps/browser/classes"
+X3D_CLASSPATH="${X3D_CLASSPATH}:${X3D_HOME}/apps/cadfilter/classes"
+
+X3D_PROJECT_CLASSPATH="${JOGL_DEV_CLASSPATH}"
+X3D_PROJECT_CLASSPATH="${X3D_PROJECT_CLASSPATH}:${JOAL_DEV_CLASSPATH}"
+
+ELUMENS_LIB_PATH="${X3D_HOME}/apps/browser/lib"
+
+X3D_PATH="${JAVACC_HOME}"
+X3D_PATH="${X3D_PATH}:${JOGL_DEV_LIB_PATH}"
+X3D_PATH="${X3D_PATH}:${JOAL_DEV_LIB_PATH}"
+X3D_PATH="${X3D_PATH}:${ELUMENS_LIB_PATH}"
+X3D_PATH="${X3D_PATH}:${PATH}"
+
+home()
+{
+  export PROJECT_HOME=
+  export PROJECT_ROOT=
+  export AREA=home
+  export PS1="[$AREA \W] \$ "
+  export CVSROOT=
+  export PATH=$STD_PATH
+  export CLASSPATH=
+  cd
+}
+
+xj3d()
+{
+  export PROJECT_HOME="${X3D_HOME}"
+
+  # Setting this sets all makefile variables of PROJECT_CLASSPATH (very important)
+  export PROJECT_CLASSPATH="${X3D_PROJECT_CLASSPATH}"
+  export AREA=xj3d
+  export PS1="[$AREA \W] \$ "
+  export LD_LIBRARY_PATH="$ELUMENS_LIB_PATH:$X3D_LIB_PATH"
+  export PATH="$X3D_PATH"
+  export CLASSPATH="${X3D_CLASSPATH}:${X3D_PROJECT_CLASSPATH}"
+  export PROJECT_ROOT="${PROJECT_HOME}"
+  cd $PROJECT_HOME $1
+}
+
+# This has no idea where the javahelp pages are, but it will bring up the browser
+alias browser="java -Dsun.java2d.opengl=true -Djava.library.path=./natives -Xmx1g xj3d.browser.Xj3DBrowser -enableOriginManager -anisotropicDegree 2 -numLoaderThreads 4"
+
+xj3d

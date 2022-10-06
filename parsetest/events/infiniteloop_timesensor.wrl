@@ -1,0 +1,36 @@
+#VRML V2.0 utf8
+
+DEF TIME TimeSensor { loop TRUE }
+
+DEF SCRIPT Script {
+   eventIn SFFloat fraction
+   eventOut MFString text
+   url ["javascript:
+      var sent;
+
+      function initialize() {
+         sent = false;
+      }
+
+      function fraction(val) {
+          if (!sent) {
+             text = new MFString('Pass');
+             sent = true;
+          }
+      }
+   "]
+}
+
+Shape {
+   geometry DEF TEXT Text { }
+}
+
+Transform {
+   translation 0 2 0
+   children [
+      Shape { geometry Box { size 1 1 1 } }
+   ]
+}
+
+ROUTE TIME.fraction_changed TO SCRIPT.fraction
+ROUTE SCRIPT.text TO TEXT.string

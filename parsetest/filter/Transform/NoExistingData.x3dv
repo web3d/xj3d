@@ -1,0 +1,12 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Transform {
+   translation 0 1 0
+   children [
+      Shape {
+         geometry Box {}
+      }
+   ]
+}

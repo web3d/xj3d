@@ -1,0 +1,38 @@
+#VRML V2.0 utf8
+
+Switch {
+   choice [
+	  DEF SHAPE Shape {
+	     geometry Box {}
+	  }
+   ]
+}
+
+DEF TRANSFORM Transform {
+}
+
+DEF SC Script {
+  eventIn SFNode testSFNodeEI
+  eventIn MFNode testMFNodeEI
+  field SFNode shapeSFNodeUse USE SHAPE
+  field SFNode testSFNodeNull NULL
+  field SFNode testSFNodeValueDef DEF BOX1 Box {}
+  field SFNode testSFNodeValue Sphere {}
+  field SFNode transform USE TRANSFORM
+  field MFNode testMFNodeField1 []
+  field MFNode testMFNodeField2 [DEF BOX2 Box {}]
+  field SFString testSFString "Hello World"
+  eventOut MFNode children
+  eventOut MFNode testMFNode
+  eventOut SFNode testSFNodeEO
+
+  url ["javascript:
+     function initialize() {
+        children = new MFNode(shapeSFNodeUse);
+        Browser.print(testSFString);
+     }
+  "]
+}
+
+ROUTE SC.children TO TRANSFORM.set_children
+

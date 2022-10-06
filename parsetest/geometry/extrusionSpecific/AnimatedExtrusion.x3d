@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.1//EN" "http://www.web3d.org/specifications/x3d-3.1.dtd">
+<X3D profile='Immersive' version='3.1' xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='http://www.web3d.org/specifications/x3d-3.1.xsd'>
+  <head>
+    <component level='3' name= 'Interpolation'/>
+    <meta content='AnimatedExtrusion.x3d' name='title'/>
+    <meta content='Using CoordinateInterpolator2D - click geometry to activate animation loop' name='description'/>
+    <meta name='creator' content='Don Brutzman, Jeff Weekley, Jane Wu'/>
+    <meta name='created' content='9 October 2001'/>
+    <meta name='modified' content='30 January 2008'/>
+    <meta name='subject' content='CoordinateInterpolator2D'/>
+    <meta name='identifier' content=' http://X3dGraphics.com/examples/X3dForWebAuthors/Chapter07-EventAnimationInterpolation/CoordinateInterpolator2dExample.x3d '/>
+    <meta name='reference' content=' http://www.web3d.org/x3d/content/examples/Basic/development/CoordinateInterpolator2dExample.x3d '/>
+    <meta name='generator' content='X3D-Edit 3.2, https://savage.nps.edu/X3D-Edit'/>
+    <meta name='license' content='../../license.html'/> 
+  </head>
+  <Scene>
+    <Viewpoint description='Click to activate animation' orientation='1 0 0 -0.4' position='0 4 10'/>
+    <!-- Clock ROUTEs:  [from Toucher.isActive to enabled ] [from Toucher.touchTime to startTime ] [from fraction_changed to InterpolateCrossSection.set_fraction ] -->
+    <TimeSensor DEF='Clock' cycleInterval='5' enabled='false' loop='true'/>
+    <!-- InterpolateCrossSection ROUTEs:  [from Clock.fraction_changed to set_fraction ] [from value_changed to AnimatedCrossSectionExtrusion.set_crossSection ] -->
+    <CoordinateInterpolator2D DEF='InterpolateCrossSection' key='0 0.45 0.9 1' 
+    keyValue='1 1 1 -1 -1 -1 -1 1 1 1 2 2 2 -2 -1 -1 -1 1 2 2 1 1 1 -1 -1 -1 -1 1 1 1 1 1 1 -1 -1 -1 -1 1 1 1'/>
+    <ROUTE fromNode='Clock' fromField='fraction_changed' toNode='InterpolateCrossSection' toField='set_fraction'/>
+    <Transform translation='0.25 1 0'>
+        <!-- &amp; is the XML escape character code for ampersand character -->
+        <!-- Toucher ROUTEs:  [from isActive to Clock.enabled ] [from touchTime to Clock.startTime ] -->
+        <TouchSensor DEF='Toucher' description='click &amp; hold shape to animate Extrusion'/>
+        <ROUTE fromNode='Toucher' fromField='isActive' toNode='Clock' toField='enabled'/>
+        <!-- also reset clock to restart -->
+        <ROUTE fromNode='Toucher' fromField='touchTime' toNode='Clock' toField='startTime'/>
+        <Shape>
+            <Appearance>
+                <Material diffuseColor='0.2 0.8 0.4'/>
+            </Appearance>
+            <!-- AnimatedCrossSectionExtrusion ROUTE:  [from InterpolateCrossSection.value_changed to set_crossSection ] -->
+            <Extrusion DEF='AnimatedCrossSectionExtrusion' spine='-4 0 -2 -1 0 -2 2 0 1 2 0 4'/>
+        </Shape>
+        <ROUTE fromNode='InterpolateCrossSection' fromField='value_changed' toNode='AnimatedCrossSectionExtrusion' toField='set_crossSection'/>
+    </Transform>
+    <Transform translation='-1.5 -1 2'>
+        <Billboard axisOfRotation='0 0 0'>
+            <Shape>
+                <Text string='"click &amp; hold shape" "to animate Extrusion"' solid='true'>
+                    <FontStyle family='SANS' justify='"MIDDLE" "MIDDLE"' size='0.8'/>
+                </Text>
+                <Appearance>
+                    <Material diffuseColor='0.8 0.4 0.2'/>
+                </Appearance>
+            </Shape>
+        </Billboard>
+    </Transform>
+</Scene>
+</X3D>

@@ -1,0 +1,23 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+COMPONENT DIS:1
+
+# This is the camera position when the object comes into view
+Viewpoint {
+   position 0 0 15
+}
+
+# Translation is set to place object 5 meters to the left on the X axis
+EspduTransform {
+   address "239.1.2.3"
+   port 62040
+   siteID 0
+   applicationID 1
+   networkMode "networkReader"
+   entityID 0
+   translation -5 0 0
+    children [
+        Shape { appearance Appearance { material Material { diffuseColor 1 0 0 }} geometry Box { size 1 1 1} }
+    ]
+}

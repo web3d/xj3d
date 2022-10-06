@@ -1,0 +1,130 @@
+Procedures for conducting a merge of the Trunk to the NPS Branch
+
+1) First, sign up for commit notification by email.  See Mail Notifications at:
+http://www.xj3d.org/svn.html for the sign up procedure.  Make a folder to direct
+these commit emails via your email client filtering process.  Highly suggest
+categorizing these folders to src/java, apps/browser/src/java,
+apps/cadfilter/src/java, etc., so that you can track specific changes.  Only
+perform a merge for those specific things that have changed in the trunk.  Don't
+perform a merge on the whole repository (can produce many unnecessary conflicts).
+
+2) From NetBeans, right click over folder to conduct merge, i.e. src/java.
+Select -> Subversion -> Merge Changes...  See PNG titled NetBeans-SVN-Merge to
+see settings (must choose a Starting Revision to merge from, preferably a date
+before the last trunk revision date to ensure you capture all updates).  Once
+the list of revisions appear after the search, select the revision, then select
+"include this revision" to ensure all merges will be captured.  Keep Ending
+Revision blank (this is the HEAD).  Make sure that you select: Merge From
+One Repository Folder.  Could be disastrous if the default from origin is
+selected.  You should see an active svn update happen only to those files that
+were announced as updated in the svn commit emails.  Be sure to annotate the
+merge date below with current date on top.
+
+    a) Carefully update the project tree by directory to lessen collision impact,
+       i.e. one directory at a time.  Save src/java for last
+    b) Be careful to watch for lib/ additions/deletions in the source commit emails
+    c) !! Very important !! Look for any modifications to the file
+       src/java/Makefile-opengl.   This contains the build order list.  Make sure
+       that the build.properties property "xj3d.build.order" matches the
+       Makefile-opengl package build order exactly.  There are source commits
+       that are just placeholders, legacy or experimental sources and are not to
+       be compiled.  The build order says what to include.  The makefile uses
+       dot notation.  You'll have to modify to path notation in the properties file.
+       The apps build order lists will also have to be checked:
+       apps/browser/src/java/Makefile and apps/cadfilter/src/java/Makefile.
+       The corresponding "browser.build.order" and "cadfilter.build.order" properties
+       in build.properties should reflect those specific Makefile build orders.
+    d) Since the trunk is now building with Ant, keep an eye on the build
+       includes/excludes listed in the compile target
+
+3) Painstakingly resolve each tree and file conflict after the Merge Complete
+message shows what needs to be done.  Copy this output to a *.txt file so that
+you can reference it often.  Conflict resolution is done by navigating to the
+directory/file, right clicking -> Subversion -> Resolve Conflicts... and either
+Accept, or Accept & Next on the remote file tab (not the working copy, unless
+you want to specifically keep experimental changes -- this will take some real
+dedicated work to resolve successfully).
+
+4) To see a diff of a branch source package against the trunk, navigate to the
+specific branch source package and type:
+
+# This should ignore whitespace diffs, but give contextual differences
+svn diff --diff-cmd diff -x "-wu" --old . --new  http://svn.xj3d.org/xj3d_code/trunk/src/java/{src-package} > difflog
+
+A file named difflog will be created in the package where the above command is
+invoked which can be checked for variations between the branch and trunk
+
+5) If there happens to be a tree conflict, open a CLI and type:
+    svn resolve --accept working -R .
+
+6) A handy way to retrieve a previously deleted file (you must have researched
+the revision # where it was deleted):
+svn cp http://svn.xj3d.org/xj3d_code/branches/NPS/lib/aviatrix3d-all_2.1.0.jar@10329 aviatrix3d-all_2.1.0.jar
+
+Dates of last merge with the trunk (http://svn.xj3d.org/xj3d_code/trunk)
+
+16 JUL 2013 Change ColladaParser to use MatrixTransform to handle full matrices
+            better in Sketchup files, Added a FlattenTextureTransform filter for
+            baking down TextureTransform capabilities into the TextureCoordinate
+            node, Added NR support and filter chain support for TextureProperties
+21 JUN 2013 Update to j3d-org-all_2.0.0.jar, Lots of cadfilter improvements, esp.
+            for importing Collada format, better error reporting; and Replica
+            snapshot improvements.  Reconfirm working unit tests work.
+02 APR 2013 Used the javac -Xlint:all flag to expose all further warnings
+28 MAR 2013 Major commit to align with the past 2.5 weeks of cleaning up the
+            trunk by typing collections, correcting javadoc, reformatting source
+            to be more readable, removing unused imports, adding @Override
+            annotations, unhiding variables that were mistakenly hidden and
+            other minor edits to quell generated warnings.  There remains work
+            in typing collections as there are a lot of collection arrays that
+            can not be typed (generic array creation warning), and other issues
+            where home rolled Maps and Sets are used vice the platform version
+            which return Objects vice a Type.
+01 MAR 2013 Various updates/fixes to the cadfilter app
+06 SEP 2012 Update the Make file build system to keep legacy building up to date
+26 AUG 2012 Confirmed both NPS Branch and Trunk spec examples, parsetest and
+            SAI/EAI examples are identical, updated and most are now functioning
+            after being dormant for some time
+25 AUG 2012 Confirmed both NPS Branch and Trunk are now identical codebases via
+            svn command for diff given in #4 expect for two minor deviations.
+            NPS Branch has an org.web3d.util.Version file that is updated via
+            an Ant regex parse during a clean/build.  Also,
+            web3d.vrml.renderer.ogl.nodes.geom3d.OGLExtrusion has extra sys outs
+            for debugging current extrusion issues.
+25 AUG 2012 Lots of typing collections, removing redundant casts, correcting javadoc,
+            removing unused imports, adding @Override annotations.  Fixed bug in
+            org.web3d.vrml.renderer.common.nodes.BaseGroupingNode where
+            VRMLGroupNodeType was left inadvertently when VRMLBoundedNodeType
+            was meant for setShared.  Get a lot of the EAI and SAI parsetest
+            code working for regression testing.
+21 AUG 2012 Clean up for working with the Replica app
+20 AUG 2012 Clean up a lot of generics, removed redundant casts, StringBuilder ->
+            StringBuffer instances, javadoc corrs, add @Override annotations
+04 JUN 2012 Merge NPS Branch fixes/enhancements onto Trunk
+05 MAY 2012 CadFilter fix for crash on empty coordIndex for IndexedFaceSetGeometry.
+            Xj3D fixed bug in XML files with coordinates > 1000 having digit
+            grouping and being incorrect.
+20 DEC 2011 Fixed Aviatrix3D issue with rendering LOD nodes.  Fixed Xj3D replica
+            usage for offscreen rendering, Added more parsetest/filter scenes for
+            CADFilter work, and update of parsers in j3d-org-all_1.1.0.jar
+14 SEP 2011 j3d.org and aviatrix libs updated to last release of JDK 1.5 compatible,
+            new CADFilter UI run target
+26 AUG 2011 updated aviatrix3d jar, added drag and drop to browser to open,
+            continued improvements to binary handling
+06 AUG 2011 updated j3d-all jar, better shutdown hooks enabled, CADFilter error
+            message improvements, readying for v3.3.
+23 JUL 2011 Clean up of shutdown calls, improvements to ContentLoadManager handling,
+            new exit codes for CADFilter + fix bug in binary content handler
+15 MAY 2011 Added spatial support functions, fixed color issues with Triangle
+            nodes, fine tune compression filters, add filter to export pixel
+            textures from an x3d file to an image file
+18 APR 2011 Browser app shutdown and navigation cursor bug fixes. Add CadFilter UI
+            and triangle count filters.  Add ExportPixelTextureFilter
+15 MAR 2011 Further Binary Compression Spec implementations
+17 JAN 2011 QuantizedzlibFloatArrayAlgorithm 1&2 spec implementations
+29 DEC 2010 Compressed Binary Encoding updates
+19 DEC 2010
+24 AUG 2010
+07 JUL 2010
+05 MAY 2010
+14 FEB 2010 (initial commit of the NPS Branch)

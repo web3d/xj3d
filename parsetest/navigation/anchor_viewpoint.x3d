@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
+<X3D profile='Interactive' version='3.0'>
+<Scene>
+   <Viewpoint DEF="View1" description="View1" position="0 0 4"/>
+   <Viewpoint DEF="View2" description="View2" position="0 0 20"/>
+   <Anchor url="#View2" description="blah">
+      <Shape><Box/></Shape>
+   </Anchor>
+</Scene>
+</X3D>

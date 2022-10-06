@@ -1,0 +1,10 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Shape {
+  geometry IndexedFaceSet {
+    set_coordIndex [0 1 2]
+  }
+}
+

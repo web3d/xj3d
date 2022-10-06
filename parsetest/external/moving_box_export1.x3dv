@@ -1,0 +1,34 @@
+#X3D V3.0 utf8
+
+# Only named nodes exported with an EXPORT statement are eligible to be imported 
+# into another file. In this example, TG is eligible, but TG2 is not. Other
+# scenes that import this file should only see the box.
+
+PROFILE Immersive
+
+DEF TG Transform {
+  rotation 0 1 0 0.78
+  children Shape {
+    geometry Box {}
+    appearance Appearance {
+      material Material {
+        diffuseColor 1 0 0
+      }
+    }
+  }
+}
+
+DEF TG2 Transform {
+  rotation 0 1 0 0.78
+  translation -3 0 0
+  children Shape {
+    geometry Sphere {}
+    appearance Appearance {
+      material Material {
+        diffuseColor 0 1 0
+      }
+    }
+  }
+}
+
+EXPORT TG AS BOX_TRANSFORM

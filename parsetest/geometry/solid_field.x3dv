@@ -1,0 +1,76 @@
+#X3D V3.0 utf8
+
+# The box node has solid set to true, so it should not be visible from the inside.
+# The other geometry has solid set to false, so they should be viewable from the inside.
+#
+# Bug #544: Make sure that the USE statement is not causing the box to have solid set to true.
+# Also, make sure that the solid set to false on the geometries declared after the box 
+# does not affect the solid field of the box.
+
+PROFILE Immersive 
+
+Viewpoint { 
+  position 0 0 10 
+  description "Default"
+}
+
+Viewpoint { 
+  position 0 0 0.5
+  description "Inside solid box"
+}
+
+Viewpoint { 
+  position 2 0 0.0 
+  description "Inside non-solid cylinder"
+}
+
+Collision {
+  collide FALSE
+  children [
+    Transform {
+      translation -4 0 0
+      children Shape {
+        appearance DEF app Appearance {
+          material Material {
+            diffuseColor 1 0 0
+          }
+        }
+        geometry Cone {
+        solid FALSE
+        height 2
+        bottomRadius 2
+        }
+      }
+    }
+
+    Transform {
+      translation 0 0 0
+      children Shape {
+        appearance USE app 
+        geometry Box {
+          solid TRUE
+        }
+      }
+    }
+
+    Transform {
+      translation 2 0 0
+      children Shape {
+        appearance USE app 
+        geometry Cylinder {
+          solid FALSE
+        }
+      }
+    }
+
+    Transform {
+      translation 4 0 0
+      children Shape {
+        appearance USE app 
+        geometry Sphere {
+          solid FALSE
+        }
+      }
+    }
+  ]
+}

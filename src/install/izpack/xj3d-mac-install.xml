@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<!--
+    Izpack installation file for the Xj3D app.
+    Based on the IzPack sample.
+    http://izpack.org/documentation
+-->
+
+<installation version="1.0">
+
+  <info>
+    <appname>@{product.Name}</appname>
+    <!-- the application name -->
+    <appversion>v@{product.Version}</appversion>
+    <!-- the application version -->
+    <appsubpath>Xj3D</appsubpath>
+    <!-- the subpath for the default of the installation path. A variable substitution and a maskable slash-backslash conversion will be done. If this tag is not defined, the application name will be used instead. -->
+    <authors>
+      <author name="@{impl.vendor}" email="info@yumetech.com"/>
+      <author name="@{my.name}" email="@{my.email}"/>
+    </authors>
+    <url>@{product.url}</url>
+    <!-- the application official website url -->
+    <uninstaller write="yes" name="Xj3Duninstaller.jar"/>
+    <!-- specifies whether to create an uninstaller after installation, and which name to use for it. This tag has the write attribute, with default value `` yes``. If this tag is not specified, the uninstaller will still be written. The name attribute can be used to change the default name of the generated uninstaller, i.e. `` uninstaller.jar``. -->
+    <javaversion>1.7</javaversion>
+    <!-- specifies the minimum version of Java required to install your program. Values can be 1.2, 1.2.2, 1.4, etc. The test is a lexical comparison against the java.version System property on the install machine. -->
+    <requiresjdk>no</requiresjdk>
+    <!-- specifies the path for the logfile of the SummaryLoggerInstallerListener. -->
+    <summarylogfilepath>$INSTALL_PATH/InstallSummary.htm</summarylogfilepath>
+  </info>
+
+  <guiprefs height="600" width="800" resizable="yes">
+    <laf name="looks">
+      <os family="mac"/>
+      <param name="variant" value="plastic3D"/>
+    </laf>
+  </guiprefs>
+
+  <locale>
+    <langpack iso3="usa"/>
+  </locale>
+
+  <!--
+      The resources section.
+      The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+  -->
+  <resources>
+    <res id="LicencePanel.licence" src="src/install/izpack/license.txt"/>
+    <res id="Installer.image" src="src/install/izpack/Xj3DlogoWhite32.jpg"/>
+  </resources>
+
+  <!--
+      The panels section.
+      We indicate here which panels we want to use. The order will be respected.
+  -->
+  <panels>
+    <panel classname="HelloPanel"/>
+    <!--panel classname="InfoPanel"/-->
+    <panel classname="LicencePanel"/>
+    <panel classname="TargetPanel"/>
+    <panel classname="PacksPanel"/>
+    <panel classname="ShortcutPanel"/>
+    <panel classname="SummaryPanel"/>
+    <panel classname="InstallPanel"/>
+    <panel classname="SimpleFinishPanel"/>
+  </panels>
+
+    <listeners>
+        <listener installer="SummaryLoggerInstallerListener">
+            <os family="mac"/>
+        </listener>
+    </listeners>
+
+  <!--
+      The packs section.
+      We specify here our packs.
+  -->
+  <packs>
+    <pack name="Base" required="yes">
+      <description>The base files for running Xj3D</description>
+
+      <!-- DIRECTORIES -->
+      <fileset dir="@{dist.dir}" targetdir="$INSTALL_PATH/Xj3DBrowser.app/Contents/Resources/Java">
+          <include name="*.jar"/>
+          <exclude name="*linux*.jar"/>
+          <exclude name="*windows*.jar"/>
+          <exclude name="*-src.jar"/>
+      </fileset>
+
+      <fileset dir="@{natives.dir}/@{os.name}/@{os.arch}"       targetdir="$INSTALL_PATH/Xj3DBrowser.app/Contents/Resources/bin">
+        <include name="*.jnilib"/>
+      </fileset>
+
+      <fileset dir="@{browser.dir}/doc/javaHelp"                  targetdir="$INSTALL_PATH/doc/javaHelp"/>
+      <fileset dir="@{browser.dir}/images"                        targetdir="$INSTALL_PATH/images"/>
+
+      <!-- FILES -->
+      <file src="@{bin.dir}/ant2html.xsl"                        targetdir="$INSTALL_PATH"/>
+      <file src="@{bin.dir}/install/izpack/build.xml"            targetdir="$INSTALL_PATH"/>
+      <file src="@{bin.dir}/install/izpack/browser.sh.command"   targetdir="$INSTALL_PATH"/>
+      <file src="@{bin.dir}/install/izpack/converter.sh.command" targetdir="$INSTALL_PATH"/>
+      <file src="@{browser.dir}/moving_box.x3dv"                    targetdir="$INSTALL_PATH"/>
+      <file src="@{browser.dir}/Xj3D-256x256.jpg"                   targetdir="$INSTALL_PATH"/>
+
+      <file src="README"                                        targetdir="$INSTALL_PATH"/>
+      <file src="RELEASE_NOTES"                                 targetdir="$INSTALL_PATH"/>
+      <file src="RELEASE_NOTES_HISTORY"                         targetdir="$INSTALL_PATH"/>
+      <file src="buildStamp.txt"                                targetdir="$INSTALL_PATH"/>
+
+      <!-- Apple specific files -->
+      <file src="src/install/izpack/macosx/Info.plist"          targetdir="$INSTALL_PATH/Xj3DBrowser.app/Contents"/>
+      <file src="src/install/izpack/macosx/PkgInfo"             targetdir="$INSTALL_PATH/Xj3DBrowser.app/Contents"/>
+      <file src="src/install/izpack/macosx/xj3dIcons.icns"      targetdir="$INSTALL_PATH/Xj3DBrowser.app/Contents/Resources"/>
+      <file src="src/install/izpack/macosx/JavaApplicationStub" targetdir="$INSTALL_PATH/Xj3DBrowser.app/Contents/MacOS"/>
+
+      <executable targetfile="$INSTALL_PATH/Xj3DBrowser.app/Contents/MacOS/JavaApplicationStub" stage="never" />
+      <executable targetfile="$INSTALL_PATH/browser.sh.command" stage="never"/>
+      <executable targetfile="$INSTALL_PATH/converter.sh.command" stage="never"/>
+
+    </pack>
+
+    <!-- The documentation (1 directory) -->
+    <pack name="Documentation" required="no">
+        <description>Xj3D documentation (HTML, ODT and TEXT).</description>
+        <fileset dir="docs" targetdir="$INSTALL_PATH/doc">
+            <exclude name="javadoc/**"/>
+            <exclude name="setup/**"/>
+            <exclude name="NPS-build-procedures-for-Xj3D.txt"/>
+            <exclude name="NPS-SVN-MergeProcedures.txt"/>
+            <exclude name="Xj3D-Codebase-ChangeLog-NPS.txt"/>
+            <exclude name="NetBeans-SVN-Merge.png"/>
+            <exclude name="known-compile-warnings"/>
+            <exclude name="TODO"/>
+            <include name="**"/>
+        </fileset>
+    </pack>
+  </packs>
+
+</installation>

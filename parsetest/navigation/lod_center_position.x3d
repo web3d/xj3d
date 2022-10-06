@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
+<X3D profile='Immersive' version='3.0'>
+<head>
+</head>
+# Test the center position of the LOD node.
+#
+# The geometry should change from a sphere to a box when the viewpoint reaches 10
+#   units from the center position of (0 0 5). Walking straight toward the geometry 
+#   from the initial viewpoint, the change should occur at (0 0 15). The semi-transparent
+#   red box is used to indicate where the change takes place. Once the viewpoint passes 
+#   this position, the red box should disappear and be replaced with a black background.
+<Scene>
+<NavigationInfo type='"WALK"'/>
+<Viewpoint description="blah" position="0 0 25"/>
+<Collision collide='false' enabled='false'>
+   <Transform translation='0 0 14.95'>
+      <Shape>
+	<Box size='50 50 0.1'/>
+	<Appearance>
+	  <Material diffuseColor='1 0 0' transparency='0.6'/>
+	</Appearance>
+      </Shape>
+   </Transform>
+</Collision>
+<LOD range='10' center='0 0 5'>
+ <Shape>
+    <Box></Box>
+ </Shape>
+ <Shape>
+    <Sphere></Sphere>
+ </Shape>
+</LOD>
+</Scene>
+</X3D>

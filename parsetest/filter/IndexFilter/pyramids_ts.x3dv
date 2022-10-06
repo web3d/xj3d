@@ -1,0 +1,49 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Transform {
+  translation -1.0 0.0 0.0
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1.0 0.0 0.0
+        }
+      }
+      geometry TriangleSet {
+        coord DEF COORD Coordinate {
+          point [1.0 0.0 0.0, 0.0 0.0 -1.0, 0.0 1.0 0.0, 0.0 0.0 -1.0, -1.0 0.0 0.0, 0.0 1.0 0.0, -1.0 0.0 0.0, 0.0 0.0 1.0, 0.0 1.0 0.0, 0.0 0.0 1.0, 1.0 0.0 0.0, 0.0 1.0 0.0, 1.0 0.0 0.0, -1.0 0.0 0.0, 0.0 0.0 -1.0, 1.0 0.0 0.0, 0.0 0.0 1.0, -1.0 0.0 0.0]
+        }
+      }
+    }
+  ]
+}
+Transform {
+  translation 1.0 0.0 0.0
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.0 0.0 1.0
+        }
+      }
+      geometry DEF TS TriangleSet {
+        coord USE COORD  
+      }
+    }
+  ]
+}
+Transform {
+  translation 0.0 0.0 -1.0
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.0 1.0 0.0
+        }
+      }
+      geometry USE TS
+    }
+  ]
+}

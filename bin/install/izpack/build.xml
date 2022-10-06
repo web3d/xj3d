@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Seems to render in Mozilla Firefox the best.  Broken in IE7 -->
+<?xml-stylesheet type="text/xsl" href="./ant2html.xsl"?>
+
+<project name="Xj3D 2.1" default="run" basedir=".">
+
+    <!-- $Id: build.xml 12537 2015-11-02 22:56:36Z tnorbraten $ -->
+
+    <fail message="Please install Apache Ant 1.8.0 or higher from http://ant.apache.org and set your environment's path to ${ant.home}/bin.">
+        <condition>
+            <not>
+                <antversion atleast="1.8.0"/>
+            </not>
+        </condition>
+    </fail>
+
+    <description>Runs ${ant.project.name}</description>
+
+    <property name="browser" value="xj3d.browser.Xj3DBrowser"/>
+    <property name="cadfilter" value="xj3d.filter.CDFFilter"/>
+    <property name="natives.dir" value="natives"/>
+    <property name="library.path" value="'${natives.dir}/${os.name}/${os.arch}'"/>
+
+    <!-- Common JVM switches/settings -->
+
+    <!-- Assumes 2GB RAM available -->
+    <property name="runarg0" value="-Xmx1g"/>
+    <property name="runarg1" value="-XX:-UseParallelGC"/>
+    <property name="runarg2" value="-XX:-UseConcMarkSweepGC"/>
+    <property name="runarg3" value="-Dorg.web3d.vrml.renderer.common.nodes.shape.useTextureCache=true"/>
+    <property name="runarg3.1" value="-Dswing.aatext=true -Dawt.useSystemAAFontSettings=gasp"/>
+    <!--property name="runarg3.2" value="-Djogl.debug.DebugGL"/-->
+
+    <property name="common.args" value="${runarg0} ${runarg1} ${runarg2} ${runarg3} ${runarg3.1}"/>
+
+    <!-- For Win -->
+
+    <property name="runarg4" value="-Dsun.java2d.d3d=false -Dsun.java2d.opengl=true"/>
+    <property name="runarg5" value="-Djava.library.path=${library.path}"/>
+
+    <!-- For Linux -->
+
+    <!-- Linux does not seem to like setting hardware accelerated OpenGL for Java2D -->
+    <property name="runarg6" value="-Dsun.java2d.opengl=false"/>
+    <property name="runarg7" value="${runarg5}"/>
+
+    <!-- For Mac -->
+    <property name="runarg8"  value="-Dsun.java2d.opengl=true"/>
+    <property name="runarg9"  value="-Dapple.awt.graphics.UseQuartz=true"/>
+    <property name="runarg10" value="-Dapple.laf.useScreenMenuBar=true"/>
+    <property name="runarg11" value="-Djava.library.path=./Xj3DBrowser.app/Contents/Resources/bin"/>
+
+    <!-- Override Apple's forced use of the privileged /System/Library/Java/Extensions folder -->
+    <property name="runarg12" value="-Djava.ext.dirs="/>
+    <property name="runarg13" value="-Djava.net.preferIPv4Stack=true"/>
+
+    <property name="dis.protocol.handler.prop"
+              value="org.web3d.xj3d.disprotocol_handler.class"/>
+    <property name="dis.xmpp.protocol.handler"
+              value="org.web3d.vrml.renderer.common.input.dis.DISXMLProtocolHandler"/>
+
+    <!-- default scene to open -->
+    <property name="scene" value="moving_box.x3dv"/>
+
+    <!--
+    ============
+    INIT SECTION
+    ============
+    -->
+
+    <target name="platformInitialize" depends="platformType,initializeWindows,initializeUnix,initializeMac"/>
+    <target name="platformType">
+        <condition property="isWindows" >
+            <os family="windows"/>
+        </condition>
+        <condition property="isMac" >
+            <os family="mac"/>
+        </condition>
+        <!-- Based on Apache Ant user-manual example -->
+        <condition property="isUnixNotMac">
+            <and>
+                <os family="unix"/>
+
+                <not>
+                    <equals arg1="${os.name}" arg2="Mac OS X"/>
+                </not>
+
+            </and>
+        </condition>
+    </target>
+
+    <!-- Render modes are newt (GLWindow), swing (GLCanvas), or swing-lightweight (GLJPanel) -->
+    <!-- NEWT not registering mouse events on Win32 -->
+    <target name="initializeWindows" if="isWindows" depends="initializeAll">
+        <property name="run.args" value="${win_runarguments}"/>
+        <property name="app.args" value="-anisotropicDegree 2 -enableOriginManager -numLoaderThreads 4 -swing ${scene}"/>
+        <property name="jar.dir" location="jar"/>
+    </target>
+    <target name="initializeUnix" if="isUnixNotMac" depends="initializeAll">
+        <property name="run.args" value="${unix_runarguments}"/>
+        <property name="app.args" value="-anisotropicDegree 2 -enableOriginManager -numLoaderThreads 4 -newt ${scene}"/>
+        <property name="jar.dir" location="jar"/>
+    </target>
+    <target name="initializeMac" if="isMac" depends="initializeAll">
+        <property name="run.args" value="${mac_runarguments}"/>
+        <property name="app.args" value="-anisotropicDegree 2 -enableOriginManager -numLoaderThreads 4 -newt ${scene}"/>
+        <property name="jar.dir" location="Xj3DBrowser.app/Contents/Resources/Java"/>
+    </target>
+    <target name="initializeAll" >
+        <property name="win_runarguments"  value="${common.args} ${runarg4} ${runarg5}"/>
+        <property name="unix_runarguments" value="${common.args} ${runarg6} ${runarg7} "/>
+        <property name="mac_runarguments"  value="${common.args} ${runarg8} ${runarg9} ${runarg10} ${runarg11} ${runarg12} ${runarg13}"/>
+    </target>
+
+    <!-- This routine is a post install cleanup of unnecessary natives for Win/Unix only -->
+    <target name="init" depends="platformInitialize,delete.unix,delete.win">
+        <tstamp/>
+        <echo message="-------------------------------------------------------------------------------------------------"/>
+        <echo message="Now starting ${ant.project.name}"/>
+        <echo message="-------------------------------------------------------------------------------------------------"/>
+        <echo message="${ant.version} installed at ${ant.home}"/>
+        <echo message="Java&#x2122; Virtual Machine version ${java.version} installed at ${java.home}"/>
+        <echo message="Operating System: ${os.name} version ${os.version} running on ${os.arch} "/>
+        <echo message="Today is: ${TODAY}"/>
+        <echo message="Local Time: ${TSTAMP}"/>
+        <echo message="-------------------------------------------------------------------------------------------------"/>
+    </target>
+
+    <!-- Get rid of non-platform binaries upon first start up -->
+    <target name="delete.unix" if="isWindows">
+        <delete>
+            <fileset dir=".">
+                <include name="*.sh"/>
+            </fileset>
+        </delete>
+        <delete>
+            <fileset dir="${jar.dir}">
+                <include name="*linux*.jar"/>
+            </fileset>
+        </delete>
+        <delete includeemptydirs="true">
+            <fileset dir="${natives.dir}">
+                <exclude name="**/*.dll"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="delete.win" if="isUnixNotMac">
+        <delete>
+            <fileset dir=".">
+                <include name="*.bat"/>
+            </fileset>
+        </delete>
+        <delete>
+            <fileset dir="${jar.dir}">
+                <include name="*windows*.jar"/>
+            </fileset>
+        </delete>
+        <delete includeemptydirs="true">
+            <fileset dir="${natives.dir}">
+                <exclude name="**/*.so"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <!--
+    ===========
+    RUN SECTION
+    ===========
+    -->
+
+    <target name="classpath" depends="init">
+        <path id="app.classpath">
+            <fileset dir="${jar.dir}">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+    </target>
+
+    <target name="run" depends="classpath"
+            description="Run the 3D Viewer standalone">
+
+        <java classname="${browser}" fork="true">
+
+            <!-- Comment out for native DIS handling -->
+            <!--sysproperty key="${dis.protocol.handler.prop}"
+                         value="${dis.xmpp.protocol.handler}"/-->
+            <jvmarg line="${run.args}"/>
+
+            <!-- Enable the Smack debugger -->
+            <!--jvmarg value="-Dsmack.debugEnabled=true"/-->
+
+            <classpath refid="app.classpath"/>
+
+            <!-- ${scene} should be the full path to an X3D file -->
+            <!-- commandline given/supplied arguments scene=%1 etc -->
+            <arg line="${app.args}"/>
+
+        </java>
+
+    </target>
+
+    <target name="run.cadfilter" depends="classpath"
+            description="Run the Xj3D Converter">
+
+        <java classname="${cadfilter}" fork="true">
+
+            <jvmarg line="${run.args}"/>
+
+            <classpath refid="app.classpath"/>
+
+            <!-- args should contain the full path to convertible file -->
+            <!-- commandline given/supplied arguments args=%1 etc -->
+            <arg line="Identity ${args}"/>
+
+        </java>
+
+    </target>
+
+</project>

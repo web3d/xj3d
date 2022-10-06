@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir=".." name="NPS Xj3D - IDE">
+    <!-- The regular build.xml is still the primary Ant build file.  It is therefore imported first.
+         Additional targets found in this file support Netbeans-specific capabilities. -->
+    <!-- TODO: move general targets up and over to build.xml (or somesuch file nearby) for general use. -->
+    <import file="../build.xml"/>
+    <!-- These next compile tasks are for running various example scenes -->
+    <target depends="init" name="compile.examples.sai.dom.demo">
+        <javac classpathref="app.classpath" debug="on" excludes="${examples.compile.excludes}" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${examples.dir}/SAI_DOM_Demo" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.examples.applet">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${examples.dir}/applet" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.examples.loader">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${examples.dir}/loader" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.examples.sai">
+        <javac classpathref="app.classpath" debug="on" excludes="${examples.compile.excludes}" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${examples.dir}/sai" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.examples.sav">
+        <javac classpathref="app.classpath" debug="on" excludes="${examples.compile.excludes}" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${examples.dir}/sav" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <!-- Includes both parsetest/dis and xj3d_extensions/dis -->
+    <target depends="init" name="compile.parsetest.dis">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${parsetest.dis.dir}" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${parsetest.dir}/xj3d_extensions/dis" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.parsetest.eai">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${eai.src.dir}" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.parsetest.sai">
+        <javac classpathref="app.classpath" debug="on" excludes="${sai.compile.excludes}" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${sai.src.dir}" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.parsetest.proto">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${parsetest.dir}/proto" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.parsetest.scripts">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${parsetest.dir}/scripts" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.parsetest.sensors">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${parsetest.dir}/sensors" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.xj3d_extensions.combined">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${xj3d_extensions.combined.dir}" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.xj3d_extensions.sai">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" source="${javac.source}" srcdir="${parsetest.dir}/xj3d_extensions/sai" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.examples.spec">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" includes="**/*.java" source="${javac.source}" srcdir="${examples.spec.x3d.java.dir}" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile.examples.browser">
+        <javac classpathref="app.classpath" debug="on" fork="true" includeAntRuntime="no" includes="OGLBrowser.java,OGLLightweightBrowser.java,OGLMultiWallBrowser.java,X3DLoader.java" source="${javac.source}" srcdir="${examples.browser.dir}" target="${javac.target}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="compile,
+                     compile.examples.sai.dom.demo,
+                     compile.examples.applet,
+                     compile.examples.browser,
+                     compile.examples.loader,
+                     compile.examples.sai,
+                     compile.examples.sav,
+                     compile.examples.spec,
+                     compile.parsetest.dis,
+                     compile.parsetest.eai,
+                     compile.parsetest.proto,
+                     compile.parsetest.sai,
+                     compile.parsetest.scripts,
+                     compile.xj3d_extensions.combined,
+                     compile.xj3d_extensions.sai"
+            name="compile.examples.and.parsetest"/>
+    <target depends="init" name="compile-selected-files-in-browser">
+        <fail unless="files">Must set property 'files'</fail>
+        <javac debug="on" destdir="${examples.browser.dir}" fork="true" includeantruntime="false" includes="${files}" source="1.7" srcdir="${examples.browser.dir}">
+            <classpath path="${run.classpath}"/>
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile-selected-files-in-test">
+        <fail unless="files">Must set property 'files'</fail>
+        <javac debug="on" destdir="${build.test.classes.dir}" fork="true" includeantruntime="false" includes="${files}" source="1.7" srcdir="test">
+            <classpath path="${javac.test.classpath}"/>
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile-selected-files-in-scripts">
+        <fail unless="files">Must set property 'files'</fail>
+        <mkdir dir="parsetest/scripts"/>
+        <javac debug="on" destdir="parsetest/scripts" fork="true" includeantruntime="false" includes="${files}" source="1.7" srcdir="parsetest/scripts">
+            <classpath path="${javac.classpath}"/>
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+    </target>
+    <target depends="init" name="compile-selected-files-in-java">
+        <fail unless="files">Must set property 'files'</fail>
+        <javac debug="on" destdir="${build.classes.dir}" fork="true" includeantruntime="false" includes="${files}" source="1.7" srcdir="${src.dir}">
+            <classpath path="${javac.classpath}"/>
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+        <antcall target="-post-compile-single"/>
+    </target>
+    <target name="-post-compile-single">
+        <!-- Update the ${dist.jar} if we change even just one source file -->
+        <jar basedir="${build.dir}" compress="false" destfile="${dist.jar}" update="true"/>
+    </target>
+    <!--
+    ============
+    RUN EXAMPLES
+    ============
+    -->
+    <target depends="compile.examples.browser" name="run-selected-file-in-browser">
+        <fail unless="run.class">Must set property 'run.class'</fail>
+        <java classname="${run.class}" dir="${examples.browser.dir}" failonerror="true" fork="true">
+            <classpath refid="app.classpath"/>
+            <!-- Comment out for native DIS handling -->
+            <!--sysproperty key="${dis.protocol.handler.prop}"
+                         value="${dis.xmpp.protocol.handler}"/-->
+            <jvmarg line="${run.args}"/>
+            <!-- Enable the Smack debugger -->
+            <!--jvmarg value="-Dsmack.debugEnabled=true"/-->
+            <arg line="${example.loader.args}"/>
+        </java>
+    </target>
+    <target depends="compile.tests" name="run-selected-file-in-test">
+        <fail unless="run.class">Must set property 'run.class'</fail>
+        <java classname="${run.class}" failonerror="true" fork="true">
+            <classpath>
+                <pathelement path="${run.test.classpath}"/>
+            </classpath>
+        </java>
+    </target>
+    <target depends="compile.parsetest.eai" name="run-selected-file-in-eai">
+        <fail unless="run.class">Must set property 'run.class'</fail>
+        <path id="cp">
+            <path refid="app.classpath"/>
+            <pathelement location="parsetest/eai"/>
+        </path>
+        <java classname="${run.class}" dir="${parsetest.dir}/eai" fork="true">
+            <classpath refid="cp"/>
+            <jvmarg line="${run.args}"/>
+        </java>
+    </target>
+    
+    <!-- Use this to compile and run example files in /examples, /parsetest, etc.
+         Must manually type in the classname property value, change the javac
+         task srcdir to the desired property name and the java task classname -->
+    <target depends="compile.examples.and.parsetest" description="Run an example file" name="run.example.file">
+        <!--property name="classname" value="SAICoordinateDemo"/-->
+        <!--property name="classname" value="Xj3DStatusBrowser"/-->
+        <!--property name="classname" value="Xj3DCADBrowser"/-->
+        <property name="classname" value="X3DLoader"/>
+        <!--javac srcdir="${examples.dir}/loader">
+        <javac srcdir="${parsetest.sai.external.dir}"-->
+        <javac classpathref="app.classpath" debug="on" encoding="${javac.encoding}" fork="true" includeAntRuntime="no" includes="${classname}.java" source="${javac.source}" srcdir="${examples.browser.dir}" target="${javac.target}" verbose="${javac.verbose}">
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+        <!--  dir="${parsetest.dir}/xj3d_extensions/sai" -->
+        <java classname="${classname}" dir="${examples.browser.dir}" fork="true">
+            <!-- Enable the Smack debugger -->
+            <!--jvmarg value="-Dsmack.debugEnabled=true"/-->
+            <classpath refid="app.classpath"/>
+            <classpath path="${examples.dir}/loader"/>
+            <!-- Comment out for native DIS handling -->
+            <!--sysproperty key="${dis.protocol.handler.prop}"
+                         value="${dis.xmpp.protocol.handler}"/-->
+            <jvmarg line="${run.args}"/>
+            <arg line="${example.loader.args}"/>
+        </java>
+    </target>
+    <target depends="compile.parsetest.sai" name="run-selected-file-in-external">
+        <fail unless="run.class">Must set property 'run.class'</fail>
+        <java classname="${run.class}" dir="${sai.test.dir}" failonerror="true" fork="true">
+            <classpath refid="app.classpath"/>
+            <jvmarg line="${run.args}"/>
+            <arg line="${sai.args}"/>
+        </java>
+    </target>
+    <!--
+    ***********************
+    OPENDIS TESTING SECTION
+    ***********************
+    -->
+    <!-- Run the PickServer first before running the AUVController -->
+    <target depends="compile.examples.sai" name="run-selected-file-in-simserver">
+        <fail unless="run.class">Must set property 'run.class'</fail>
+        <java classname="${run.class}" dir="${sai.simserver.dir}" failonerror="true" fork="true">
+            <jvmarg line="${run.args}"/>
+            <classpath refid="app.classpath"/>
+            <arg value="-visual"/>
+        </java>
+    </target>
+    <!-- Run this target, then load parsetest/dis/dynamic.x3dv in Xj3D -->
+    <!-- Or, load parsetest/xj3d_extensions/dis/entityManager.x3dv -->
+    <!-- ant -Dargs=../../parsetest/dis/dynamic.x3dv run -->
+    <target depends="compile.parsetest.dis" description="Run the 3D simulation generator in DIS mode" name="run.network.simulator">
+        <java classname="${network.simulator}" dir="${parsetest.dis.dir}" fork="true">
+            <classpath refid="app.classpath"/>
+            <jvmarg value="${runarg14}"/>
+        </java>
+    </target>
+    <!-- Run this target, then load parsetest/dis/transform.x3dv in Xj3D -->
+    <!-- ant -Dargs=../../parsetest/dis/transform.x3dv run -->
+    <target depends="compile.parsetest.dis" description="Run the 3D Simulation Viewer in DIS mode" name="run.network.tester">
+        <java classname="${network.tester}" dir="${parsetest.dis.dir}" fork="true">
+            <classpath refid="app.classpath"/>
+            <jvmarg value="${runarg14}"/>
+        </java>
+    </target>
+    <!--
+    ====================
+    DEBUG SELECTED FILES
+    ====================
+    -->
+    <target depends="compile.tests" name="debug-selected-file-in-test">
+        <fail unless="debug.class">Must set property 'debug.class'</fail>
+        <path id="cp">
+            <pathelement path="${run.test.classpath}"/>
+        </path>
+        <nbjpdastart addressproperty="jpda.address" name="${application.title}" transport="dt_socket">
+            <classpath refid="cp"/>
+        </nbjpdastart>
+        <java classname="${debug.class}" fork="true">
+            <classpath refid="cp"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+        </java>
+    </target>
+    <target depends="init,compile.examples.browser" name="debug-selected-file-in-browser">
+        <fail unless="debug.class">Must set property 'debug.class'</fail>
+        <path id="cp">
+            <path refid="app.classpath"/>
+            <pathelement location="examples/browser"/>
+        </path>
+        <nbjpdastart addressproperty="jpda.address" name="${application.title}" transport="dt_socket">
+            <classpath refid="cp"/>
+        </nbjpdastart>
+        <echo message="jdpa address=${jpda.address}"/>
+        <java classname="${debug.class}" dir="${examples.browser.dir}" failonerror="true" fork="true">
+            <classpath refid="cp"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+            <!-- Comment out for native DIS handling -->
+            <!--sysproperty key="${dis.protocol.handler.prop}"
+                         value="${dis.xmpp.protocol.handler}"/-->
+            <jvmarg line="${run.args}"/>
+            <!-- Enable the Smack debugger -->
+            <!--jvmarg value="-Dsmack.debugEnabled=true"/-->
+            <arg line="${example.loader.args}"/>
+        </java>
+    </target>
+    <target depends="init" name="debug-selected-file-in-replica">
+        <delete dir="${replica.dir}/output"/>
+        <fail unless="debug.class">Must set property 'debug.class'</fail>
+        <path id="cp">
+            <path refid="app.classpath"/>
+            <pathelement location="${replica.classes.dir}"/>
+        </path>
+        <nbjpdastart addressproperty="jpda.address" name="${application.title}" transport="dt_socket">
+            <classpath refid="cp"/>
+        </nbjpdastart>
+        <delete dir="${replica.dir}/output"/>
+        <echo/>
+        <echo>Processing ${scene}</echo>
+        <java classname="${debug.class}" dir="${replica.dir}" fork="true">
+            <classpath refid="cp"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+            <jvmarg line="${run.args}"/>
+            <arg line="${app.replica.args}"/>
+        </java>
+    </target>
+    <target depends="compile.parsetest.eai" name="debug-selected-file-in-eai">
+        <fail unless="debug.class">Must set property 'debug.class'</fail>
+        <path id="cp">
+            <path refid="app.classpath"/>
+            <pathelement location="parsetest/eai"/>
+        </path>
+        <nbjpdastart addressproperty="jpda.address" name="${application.title}" transport="dt_socket">
+            <classpath refid="cp"/>
+        </nbjpdastart>
+        <java classname="${debug.class}" dir="${parsetest.dir}/eai" fork="true">
+            <classpath refid="cp"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+            <jvmarg line="${run.args}"/>
+        </java>
+    </target>
+    <target depends="init" name="debug-selected-file-in-cadfilter">
+        <fail unless="debug.class">Must set property 'debug.class'</fail>
+        <path id="cp">
+            <path refid="app.classpath"/>
+        </path>
+        <nbjpdastart addressproperty="jpda.address" name="${application.title}" transport="dt_socket">
+            <classpath refid="cp"/>
+        </nbjpdastart>
+        <java classname="${debug.class}" dir="${cadfilter.dir}" fork="true">
+            <classpath refid="cp"/>
+            <jvmarg line="${run.args}"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+            <!-- args should be the full path to convertible file -->
+            <!-- commandline given/supplied arguments cadfilter.args=%1 etc -->
+            <arg line="${cadfilter.filter} ${cadfilter.in} ${cadfilter.out} ${cadfilter.additional.args}"/>
+        </java>
+    </target>
+    <target depends="init" name="debug-selected-file-in-external">
+        <fail unless="debug.class">Must set property 'debug.class'</fail>
+        <path id="cp">
+            <path refid="app.classpath"/>
+        </path>
+        <nbjpdastart addressproperty="jpda.address" name="${application.title}" transport="dt_socket">
+            <classpath refid="cp"/>
+        </nbjpdastart>
+        <java classname="${debug.class}" dir="${sai.test.dir}" fork="true">
+            <classpath refid="cp"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+            <jvmarg line="${run.args}"/>
+        </java>
+    </target>
+    <target depends="compile.examples.sai" name="debug-selected-file-in-simserver">
+        <fail unless="debug.class">Must set property 'debug.class'</fail>
+        <path id="cp">
+            <path refid="app.classpath"/>
+        </path>
+        <nbjpdastart addressproperty="jpda.address" name="${application.title}" transport="dt_socket">
+            <classpath refid="cp"/>
+        </nbjpdastart>
+        <java classname="${debug.class}" dir="${sai.simserver.dir}" fork="true">
+            <classpath refid="cp"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+            <jvmarg line="${run.args}"/>
+            <arg value="-visual"/>
+        </java>
+    </target>
+    <!--
+    =======================
+    ITERATIVE TESTS SECTION
+    =======================
+    -->
+    <fileset dir="${headless.src.dir}" excludes="${headless.excludes}" id="x3dScenes" includes="${headless.includes}"/>
+    <target depends="check.cadfilter" description="Test the Xj3D Converter App against a variety of scenes" name="test.cadfilter">
+        <mkdir dir="${test.products.dir}"/>
+        <for param="file.path.name">
+            <path>
+                <fileset refid="x3dScenes"/>
+            </path>
+            <sequential>
+                <propertyregex input="@{file.path.name}" override="true" property="cadfilter.input" regexp="([^\n]*)[\\/]([^\n]*)\.*" select="\0"/>
+                <!-- This expression matches everything but .(file ext) -->
+                <propertyregex input="@{file.path.name}" override="true" property="scene.name" regexp="([^\n]*)[\\/]([^\n][^.]*)" select="\2"/>
+                <echo/>
+                <echo>processing ${cadfilter.input}</echo>
+                <echo/>
+                <java classname="${cadfilter}" dir="${cadfilter.dir}" fork="true">
+                    <jvmarg line="${run.args}"/>
+                    <classpath refid="app.classpath"/>
+                    <arg line="${cadfilter.filter} ${cadfilter.input} '${basedir}/${test.products.dir}/${scene.name}.${cadfilter.extension}' ${cadfilter.additional.args}"/>
+                </java>
+            </sequential>
+        </for>
+        <echo/>
+        <echo>test.cadfilter complete.</echo>
+        <echo/>
+    </target>
+    <!-- Run this after test.cadfilter to validate the results -->
+    <target depends="check.run,compile.examples.spec" description="Test running the results of the Xj3D Converter App against a variety of scenes" name="test.cadfilter.products">
+        <for param="file.path.name">
+            <path>
+                <fileset dir="${test.products.dir}" excludes="*.png" includes="*.x3db"/>
+            </path>
+            <sequential>
+                <propertyregex input="'@{file.path.name}'" override="true" property="scene.path" regexp="([^\n]*)[\\/]([^\n]*)\.*" select="\0"/>
+                <!-- This expression matches everything but .(file ext) -->
+                <propertyregex input="'@{file.path.name}'" override="true" property="scene.name" regexp="([^\n]*)[\\/]([^\n][^.]*)" select="\2"/>
+                <echo/>
+                <echo>processing ${scene.path}</echo>
+                <echo/>
+                <java classname="${replica}" dir="${replica.dir}" fork="true">
+                    <classpath refid="app.classpath"/>
+                    <jvmarg line="${run.args}"/>
+                    <arg line="${app.replica.args} ${scene.name} -outdir '${basedir}/${test.products.dir}' ${scene.path}"/>
+                </java>
+            </sequential>
+        </for>
+        <echo/>
+        <echo>test.cadfilter.products complete.</echo>
+        <echo/>
+    </target>
+    <!--
+    perform offline rendering while headless to test example scenes to validate
+    test.cadfilter.products.  These images should produce the same as above.
+    -->
+    <target depends="compile.examples.and.parsetest" description="use Xj3D's replica app to create screenshots of each given scene for regression testing" if="replica.class.present" name="test.headless.rendering">
+        <for param="file.path.name">
+            <path>
+                <fileset refid="x3dScenes"/>
+            </path>
+            <sequential>
+                <propertyregex input="@{file.path.name}" override="true" property="scene.path" regexp="([^\n]*)[\\/]([^\n]*)\.*" select="\0"/>
+                <!-- This expression matches everything but .(file ext) -->
+                <propertyregex input="@{file.path.name}" override="true" property="scene.name" regexp="([^\n]*)[\\/]([^\n][^.]*)" select="\2"/>
+                <echo/>
+                <echo>processing ${scene.path}</echo>
+                <echo/>
+                <java classname="${replica}" dir="${replica.dir}" fork="true">
+                    <classpath refid="app.classpath"/>
+                    <jvmarg line="${run.args}"/>
+                    <arg line="${app.replica.args} ${scene.name} -outdir '${basedir}/${test.products.dir}' '${scene.path}'"/>
+                </java>
+            </sequential>
+        </for>
+        <echo/>
+        <echo>test.headless.rendering complete.</echo>
+        <echo/>
+    </target>
+    <fileset dir="${eai.src.dir}" excludes="${eai.excludes}" id="eaiClassFiles" includes="${eai.includes}"/>
+    <target depends="compile.parsetest.eai" description="Test the EAI component of Xj3D" name="test.eai">
+        <for param="class.name">
+            <path>
+                <fileset refid="eaiClassFiles"/>
+            </path>
+            <sequential>
+                <!-- This expression matches everything but .(file ext) -->
+                <propertyregex input="@{class.name}" override="true" property="class.name" regexp="([^\n]*)[\\/]([^\n][^.]*)" select="\2"/>
+                <echo/>
+                <echo>processing ${class.name}</echo>
+                <echo/>
+                <java classname="${class.name}" dir="${eai.src.dir}" fork="true">
+                    <classpath refid="app.classpath"/>
+                    <jvmarg line="${run.args}"/>
+                </java>
+            </sequential>
+        </for>
+        <echo/>
+        <echo>test.eai complete.</echo>
+        <echo/>
+    </target>
+    <fileset dir="${sai.test.dir}" excludes="${sai.excludes}" id="saiClassFiles" includes="${sai.includes}"/>
+    <target depends="compile.parsetest.sai" description="Test the SAI component of Xj3D" name="test.sai">
+        <for param="class.name">
+            <path>
+                <fileset refid="saiClassFiles"/>
+            </path>
+            <sequential>
+                <!-- This expression matches everything but .(file ext) -->
+                <propertyregex input="@{class.name}" override="true" property="class.name" regexp="([^\n]*)[\\/]([^\n][^.]*)" select="\2"/>
+                <echo/>
+                <echo>processing ${class.name}</echo>
+                <echo/>
+                <java classname="${class.name}" dir="${sai.test.dir}" fork="true">
+                    <classpath refid="app.classpath"/>
+                    <jvmarg line="${run.args}"/>
+                    <arg line="${sai.args}"/>
+                </java>
+            </sequential>
+        </for>
+        <echo/>
+        <echo>test.sai complete.</echo>
+        <echo/>
+    </target>
+    <fileset dir="${examples.src.dir}" excludes="${examples.excludes}" id="exampleClassFiles" includes="${examples.includes}"/>
+    <target depends="compile.examples.and.parsetest" description="Test various example SAI invocations for Xj3D" name="test.examples.files">
+        <for param="class.name">
+            <path>
+                <fileset refid="exampleClassFiles"/>
+            </path>
+            <sequential>
+                <!-- This expression matches everything but .(file ext) -->
+                <propertyregex input="@{class.name}" override="true" property="class.name" regexp="([^\n]*)[\\/]([^\n][^.]*)" select="\2"/>
+                <echo/>
+                <echo>processing ${class.name}</echo>
+                <echo/>
+                <java classname="${class.name}" dir="${examples.src.dir}" fork="true">
+                    <classpath refid="app.classpath"/>
+                    <jvmarg line="${run.args}"/>
+                    <arg value="${examples.args}"/>
+                </java>
+            </sequential>
+        </for>
+        <echo/>
+        <echo>test.examples.files complete.</echo>
+        <echo/>
+    </target>
+    <target name="-profile-check">
+        <startprofiler freeform="true"/>
+    </target>
+    <target depends="-profile-check,init" if="profiler.configured" name="profile-nb">
+        <!-- first look on command line, otherwise use ${scene} property from build.properties -->
+        <property name="args" value="${scene}"/>
+        <!-- Working directory is apps/browser b/c that where the javahelp helpset is -->
+        <java classname="${main.class}" dir="${browser.dir}" fork="true">
+            <!-- Comment out for native DIS handling -->
+            <!--sysproperty key="${dis.protocol.handler.prop}"
+                         value="${dis.xmpp.protocol.handler}"/-->
+            <jvmarg line="${run.args}"/>
+            <!-- Enable the Smack debugger -->
+            <!--jvmarg value="-Dsmack.debugEnabled=true"/-->
+            <classpath refid="app.classpath"/>
+            <!-- ${args} should be the full path to an X3D file -->
+            <!-- commandline given/supplied arguments args=%1 etc -->
+            <!-- TODO other improved-quality settings -->
+            <arg line="${app.browser.args} ${args}"/>
+        </java>
+    </target>
+</project>

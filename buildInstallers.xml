@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Seems to render in Mozilla Firefox the best.  Broken in IE7 -->
+<?xml-stylesheet type="text/xsl" href="./ant2html.xsl"?>
+<project name="IzPack Installers" basedir="." default="build.installers">
+  <description>
+    Build NPS Xj3D installer jars into ./izpackInstaller.
+    Warning: this file gets included by build.xml
+    (at bottom, following property definition) and should not get invoked directly.
+  </description>
+
+  <!--
+  Copyright (c) 1995-2013 held by the author(s).  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+      * Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.
+      * Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer
+        in the documentation and/or other materials provided with the
+        distribution.
+      * Neither the names of the Naval Postgraduate School (NPS)
+        Modeling Virtual Environments and Simulation (MOVES) Institute
+        (http://www.nps.edu and http://www.movesinstitute.org)
+        nor the names of its contributors may be used to endorse or
+        promote products derived from this software without specific
+        prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+  <property name="installers.dir" location="installers"/>
+
+  <!-- Allows us to use the IzPack Ant task -->
+  <taskdef name="izpack"
+           classpath="${lib.dir}/support/standalone-compiler.jar"
+           classname="com.izforge.izpack.ant.IzPackTask"/>
+
+  <!--target name="build.installers" description="Build Xj3D installer jars" depends="init"-->
+  <target name="build.installers"
+          description="Build Xj3D installer jars"
+          depends="clean.installer.materials">
+
+    <ant antfile="build.xml" target="dist" />
+    <mkdir dir="${installers.dir}"/>
+    <echo message="Running IzPack to build the installers..."/>
+    <izpack input="${win.linux.32.64.installer.file}"
+            output="${installers.dir}/${win.linux.32.64.installer.jar}"
+            installerType="standard"
+            basedir="${basedir}"
+            inheritAll="true"
+            compression="deflate"
+            compressionlevel="9"/>
+    <izpack input="${macosx.installer.file}"
+            output="${installers.dir}/${macosx.installer.jar}"
+            installerType="standard"
+            basedir="${basedir}"
+            inheritAll="true"
+            compression="deflate"
+            compressionlevel="9"/>
+
+    <chmod file="${installers.dir}/${win.linux.32.64.installer.jar}" perm="ugo+rx"/>
+    <chmod file="${installers.dir}/${macosx.installer.jar}" perm="ugo+rx"/>
+
+    <echo message="IzPack installer builds complete"/>
+
+  </target>
+
+  <target name="clean.installer.materials"
+          description="Clean up all materials generated from producing the installers">
+
+      <delete>
+          <fileset dir="installers">
+              <include name="*.jar"/>
+          </fileset>
+      </delete>
+  </target>
+</project>

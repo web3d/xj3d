@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir=".." name="Xj3D_-_NPS_Sourceforge">
+    <property file="nbproject/nbjdk.properties"/>
+    <property location="${netbeans.user}/build.properties" name="user.properties.file"/>
+    <property file="${user.properties.file}"/>
+    <import file="jdk.xml"/>
+    <target depends="-jdk-init" name="build">
+        <ant inheritall="false" target="build"/>
+    </target>
+    <target depends="-jdk-init" name="clean">
+        <ant inheritall="false" target="clean"/>
+    </target>
+    <target depends="-jdk-init" name="javadoc">
+        <ant inheritall="false" target="javadoc"/>
+    </target>
+    <target depends="-jdk-init" name="run">
+        <ant inheritall="false" target="run"/>
+    </target>
+    <target depends="-jdk-init,-jdk-presetdef-nbjpdastart" name="debug">
+        <ant inheritall="false" target="debug"/>
+    </target>
+    <target depends="-jdk-init" name="compile-selected-files-in-test">
+        <ant inheritall="false" target="compile-selected-files-in-test"/>
+    </target>
+    <target depends="-jdk-init" name="run-selected-file-in-test">
+        <ant inheritall="false" target="run-selected-file-in-test"/>
+    </target>
+    <target depends="-jdk-init" name="compile-selected-files-in-java">
+        <ant inheritall="false" target="compile-selected-files-in-java"/>
+    </target>
+    <target depends="-jdk-init,-jdk-presetdef-nbjpdastart" name="debug-selected-file-in-test">
+        <ant inheritall="false" target="debug-selected-file-in-test"/>
+    </target>
+    <target depends="-jdk-init" name="compile-selected-files-in-scripts">
+        <ant inheritall="false" target="compile-selected-files-in-scripts"/>
+    </target>
+    <target depends="-jdk-init" name="run-selected-file-in-browser">
+        <ant inheritall="false" target="run-selected-file-in-browser"/>
+    </target>
+    <target depends="-jdk-init" name="compile-selected-files-in-browser">
+        <ant inheritall="false" target="compile-selected-files-in-browser"/>
+    </target>
+    <target depends="-jdk-init,-jdk-presetdef-nbjpdastart" name="debug-selected-file-in-browser">
+        <ant inheritall="false" target="debug-selected-file-in-browser"/>
+    </target>
+    <target depends="-jdk-init,-jdk-presetdef-nbjpdastart" name="debug-selected-file-in-replica">
+        <ant inheritall="false" target="debug-selected-file-in-replica"/>
+    </target>
+    <target depends="-jdk-init" name="test">
+        <ant inheritall="false" target="test"/>
+    </target>
+    <target depends="-jdk-init,-jdk-presetdef-nbjpdastart" name="debug-selected-file-in-eai">
+        <ant inheritall="false" target="debug-selected-file-in-eai"/>
+    </target>
+    <target depends="-jdk-init,-jdk-presetdef-nbjpdastart" name="debug-selected-file-in-cadfilter">
+        <ant inheritall="false" target="debug-selected-file-in-cadfilter"/>
+    </target>
+    <target depends="-jdk-init" name="run-selected-file-in-eai">
+        <ant inheritall="false" target="run-selected-file-in-eai"/>
+    </target>
+    <target depends="-jdk-init" name="profile-nb">
+        <ant inheritall="false" target="profile-nb"/>
+    </target>
+    <target depends="-jdk-init" name="run-selected-file-in-external">
+        <ant antfile="nbproject/ide-file-targets.xml" inheritall="false" target="run-selected-file-in-external"/>
+    </target>
+    <target depends="-jdk-init,-jdk-presetdef-nbjpdastart" name="debug-selected-file-in-external">
+        <ant antfile="nbproject/ide-file-targets.xml" inheritall="false" target="debug-selected-file-in-external"/>
+    </target>
+    <target depends="-jdk-init,-jdk-presetdef-nbjpdastart" name="debug-selected-file-in-simserver">
+        <ant antfile="nbproject/ide-file-targets.xml" inheritall="false" target="debug-selected-file-in-simserver"/>
+    </target>
+    <target depends="-jdk-init" name="run-selected-file-in-simserver">
+        <ant antfile="nbproject/ide-file-targets.xml" inheritall="false" target="run-selected-file-in-simserver"/>
+    </target>
+</project>

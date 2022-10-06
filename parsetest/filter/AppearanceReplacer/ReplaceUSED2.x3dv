@@ -1,0 +1,45 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Shape {
+   appearance DEF RED Appearance {
+      material Material {
+         diffuseColor 1 0 0         
+      }
+      texture DEF IMG1 ImageTexture { url ["vts.jpg"] }
+   }
+   geometry Box {}
+}
+
+Shape {
+   appearance USE RED
+}
+
+Transform {
+   translation 0 2 0
+   children [
+Shape {
+   appearance DEF BLUE Appearance {
+      material Material {
+         diffuseColor 0 0 1         
+      }
+      texture USE IMG1
+   }
+   geometry Box {}
+}
+]}
+
+Transform {
+   translation 0 -2 0
+   children [
+Shape {
+   appearance DEF GREEN Appearance {
+      material Material {
+         diffuseColor 0 1 0         
+      }
+      texture USE IMG1
+   }
+   geometry Box {}
+}
+]}

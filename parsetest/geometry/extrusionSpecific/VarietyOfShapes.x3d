@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.1//EN" "http://www.web3d.org/specifications/x3d-3.1.dtd">
+<X3D profile='Immersive' version='3.1' xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='http://www.web3d.org/specifications/x3d-3.1.xsd'>
+  <head>
+
+    <!-- Additional authoring resources for meta-tags: http://www.dublincore.org/documents/dcmi-terms http://www.dublincore.org/documents/dces http://www.w3.org/TR/html4/struct/global.html#h-7.4.4 http://vancouver-webpages.com/META http://vancouver-webpages.com/META/about-mk-metas2.html Additional authoring resources for language codes: ftp://ftp.isi.edu/in-notes/bcp/bcp47.txt http://www.loc.gov/standards/iso639-2/langhome.html http://www.iana.org/numbers.html#L -->
+  </head>
+  <Scene>
+<Transform translation = '0 -3 0' rotation = '0 1 0 1.5'>     
+        <Shape DEF='concaveShape'>
+		
+		<Appearance>
+			<Material ambientIntensity='0.91' diffuseColor='0.8 0.2 0.2' shininess='0.92'/>
+		
+		</Appearance>
+                <Extrusion DEF='yeah'
+                    crossSection = '4 0, 0 2, 0 1, -1 0, 0 -1, 0 -2, 4 0'
+                    endCap = 'true'
+                    scale = '.75 .75, .75 1.5, .75 .75'
+                    spine = '0 0 0, 0 1 0, 0 2 0'
+                    convex = 'false'
+                    ccw = 'false'
+                />
+	</Shape>-->
+        </Transform>
+        <Transform translation = '-2.5 0 0'>
+        <!--This shape has a triangular base-->
+        <Shape DEF='triangle'>
+		
+		<Appearance>
+			<Material ambientIntensity='0.91' diffuseColor='0.8 0.2 0.2' shininess='0.92'/>
+			
+		</Appearance>
+                <Extrusion
+                    crossSection = '0 .8, -.6 0, .6 0, 0 .8'
+                    endCap = 'true'
+                    beginCap = 'true'
+                    scale = '1 1'
+                    spine = '0 0 0, 0 1 0'
+                    solid = 'false'
+                />
+	</Shape>
+        </Transform>
+    <!--This shape has a pentagonal base spine = '0 0 0, 0 1 0'-->
+    <Transform translation = '-.5 0 0'>
+    <Shape DEF='pentagon'>
+		
+		<Appearance>
+			<Material ambientIntensity='0.91' diffuseColor='0.8 0.2 0.2' shininess='0.92'/>
+			
+		</Appearance>
+                <Extrusion DEF='pentagonalBase'
+                    crossSection = '0 1.05, -1 .39, -.75 -.75, .75 -.75, 1 .39, 0 1.05'
+                    endCap = 'true'
+                    beginCap = 'true'
+                    scale = '1 1'
+                    solid = 'true'
+                    ccw = 'false'
+                />
+	</Shape>
+        </Transform>
+<!--This shape has a hexagonal base-->
+<Transform translation = '2 1 0'>
+        <Shape DEF='hexagon'>
+		
+		<Appearance>
+			<Material ambientIntensity='0.91' diffuseColor='0.8 0.2 0.2' shininess='0.92'/>
+			
+		</Appearance>
+                <Extrusion DEF='hexagonalBase'
+                    crossSection = '1.2 0, .6 -1.0, -.6 -1.0, -1.2 0, -.6 1.0, .6 1.0, 1.2 0'
+                    endCap = 'true'
+                    beginCap = 'true'
+                    scale = '1 1'
+                    solid = 'true'
+                    spine = '0 0 0, 0 -1 0'
+                    ccw = 'true'
+                />
+	</Shape>
+    </Transform>
+  </Scene>
+</X3D>

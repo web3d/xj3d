@@ -1,0 +1,24 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Shape {
+   appearance Appearance {
+      material Material {
+            diffuseColor 0.0 0.0 1.0
+            specularColor 1.0 0.0 0.0
+      }
+
+   }
+
+   # xDimension zDimension must be at least 2 to create an ElevationGrid
+   geometry ElevationGrid {
+         height [0.0 ,4.0 ,-1.0 ,3.0 ,-5.0 ,78.0 ,-12.0 ,3.0 ,9.0 ,1.0 ,-43.0 ,12.0 ,-10.0 ,34.0 ,-12.0 ,9.0 ,-9.0 ,5.0 ,-8.0 ,23.0 ,-12.0 ,12.0 ,-32.0 ,34.0 ,-12.0 ,9.0 ,-43.0 ,32.0 ,8.0 ,-10.0
+                 0.0 ,4.0 ,-1.0 ,3.0 ,-5.0 ,78.0 ,-12.0 ,3.0 ,9.0 ,1.0 ,-43.0 ,12.0 ,-10.0 ,34.0 ,-12.0 ,9.0 ,-9.0 ,5.0 ,-8.0 ,23.0 ,-12.0 ,12.0 ,-32.0 ,34.0 ,-12.0 ,9.0 ,-43.0 ,32.0 ,8.0 ,-10.0]
+         xDimension 30
+         xSpacing 4.0
+         zDimension 2
+         zSpacing 8.0
+   }
+
+}

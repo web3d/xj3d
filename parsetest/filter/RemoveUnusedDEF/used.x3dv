@@ -1,0 +1,13 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+DEF FOO Shape {
+   geometry Box {}
+}
+
+Transform {
+   children [
+      USE FOO
+   ]
+}

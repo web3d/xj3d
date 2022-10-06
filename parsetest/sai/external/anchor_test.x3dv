@@ -1,0 +1,14 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Anchor {
+  url [ "anchor_result.x3dv" ]
+  description "Find the inlined boxes"
+  children Shape {
+    geometry Box {}
+    appearance Appearance {
+      material Material { diffuseColor 0.3 1 1 }
+    }
+  }
+}

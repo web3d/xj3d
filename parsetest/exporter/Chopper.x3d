@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
+<X3D profile='Immersive' version='3.0' xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='http://www.web3d.org/specifications/x3d-3.0.xsd'>
+  <head>
+    <meta content='Chopper.x3d' name='title'/>
+    <meta content='Rotor node provides animation and serves as an ExternProtoDeclare example' name='description'/>
+    <meta content='Don Brutzman and Joe Williams' name='creators'/>
+    <meta content='1 June 2002' name='created'/>
+    <meta content='12 January 2014' name='modified'/>
+    <meta content='http://www.web3d.org/x3d/specifications/ISO-IEC-19776-X3DEncodings-XML-ClassicVRML/Part01/examples.html#Chopper' name='reference'/>
+    <meta content='http://www.web3d.org/x3d/content/examples/Basic/X3dSpecifications/Chopper.x3d' name='identifier'/>
+    <meta content='X3D-Edit 3.3, https://savage.nps.edu/X3D-Edit' name='generator'/>
+    <meta content='../license.html' name='license'/>
+  </head>
+  <Scene>
+    <ExternProtoDeclare name='Rotor' url='"Rotor.x3d#Rotor" "http://www.web3d.org/x3d/content/examples/Basic/X3dSpecifications/Rotor.x3d#Rotor" "Rotor.wrl#Rotor" "http://www.web3d.org/x3d/content/examples/Basic/X3dSpecifications/Rotor.wrl#Rotor"'>
+      <field accessType='initializeOnly' name='rate' type='SFTime'/>
+      <field accessType='initializeOnly' name='children' type='MFNode'/>
+      <field accessType='inputOutput' name='startTime' type='SFTime'/>
+      <field accessType='inputOutput' name='stopTime' type='SFTime'/>
+    </ExternProtoDeclare>
+    <ProtoDeclare name='Chopper'>
+      <ProtoInterface>
+        <field accessType='initializeOnly' name='rotorSpeed' type='SFTime' value='1'/>
+      </ProtoInterface>
+      <ProtoBody>
+        <Group>
+          <TouchSensor DEF='Touch' description='touch to toggle rotor rotation'/>
+          <Inline url='"ChopperBody.x3d" "http://www.web3d.org/x3d/content/examples/Basic/X3dSpecifications/ChopperBody.x3d" "ChopperBody.wrl" "http://www.web3d.org/x3d/content/examples/Basic/X3dSpecifications/ChopperBody.wrl"'/>
+          <ProtoInstance DEF='Top' name='Rotor'>
+            <fieldValue name='stopTime' value='1'/>
+            <fieldValue name='children'>
+              <Inline url='"ChopperRotor.x3d" "http://www.web3d.org/x3d/content/examples/Basic/X3dSpecifications/ChopperRotor.x3d" "ChopperRotor.wrl" "http://www.web3d.org/x3d/content/examples/Basic/X3dSpecifications/ChopperRotor.wrl"'/>
+            </fieldValue>
+            <IS>
+              <connect nodeField='rate' protoField='rotorSpeed'/>
+            </IS>
+          </ProtoInstance>
+        </Group>
+        <!-- after first node in ProtoDeclare, remainder of nodes do not render -->
+        <Script DEF='RotorScript'>
+          <field accessType='inputOnly' name='startOrStopEngine' type='SFTime'/>
+          <field accessType='outputOnly' name='startEngine' type='SFTime'/>
+          <field accessType='outputOnly' name='stopEngine' type='SFTime'/>
+          <field accessType='initializeOnly' name='engineStarted' type='SFBool' value='false'/>
+          <![CDATA[
+ecmascript:
+
+function startOrStopEngine(value)
+{
+	// start or stop engine:
+	if (!engineStarted)
+	{
+		startEngine = value;
+		engineStarted = true;
+	}
+	else
+	{
+		stopEngine = value;
+		engineStarted = false;
+	}
+}
+]]>
+        </Script>
+        <ROUTE fromField='touchTime' fromNode='Touch' toField='startOrStopEngine' toNode='RotorScript'/>
+        <ROUTE fromField='startEngine' fromNode='RotorScript' toField='startTime' toNode='Top'/>
+        <ROUTE fromField='stopEngine' fromNode='RotorScript' toField='stopTime' toNode='Top'/>
+      </ProtoBody>
+    </ProtoDeclare>
+    <Viewpoint description='Example16' position='0 0 5'/>
+    <Group>
+      <ProtoInstance DEF='MikesChopper' name='Chopper'/>
+    </Group>
+  </Scene>
+</X3D>

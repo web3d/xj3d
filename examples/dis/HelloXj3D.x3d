@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.1//EN" "http://www.web3d.org/specifications/x3d-3.1.dtd">
+<X3D profile='Immersive' version='3.1'>
+    <head>
+        <component name='DIS' level='1'/>
+    </head>
+    <Scene>
+        <Viewpoint position="0 0 15"/>
+        <EspduTransform address="239.1.2.3" port="62040" translation="-10 0 0" entityID="0" siteID="0" applicationID="1" networkMode="networkReader">
+            <Shape>
+                <Appearance>
+                    <Material diffuseColor='1 0 0'/>
+                </Appearance>
+                <Box/>
+            </Shape>
+        </EspduTransform>
+    </Scene>
+</X3D>

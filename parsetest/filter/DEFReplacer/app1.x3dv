@@ -1,0 +1,11 @@
+#X3D V3.0 utf8
+
+PROFILE Immersive
+
+Shape {
+   appearance DEF FOO_APP1 {
+      material Material {
+         diffuseColor 1 0 0
+      }
+   }
+}
